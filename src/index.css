@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 25% 98%;
+    --foreground: 225 35% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 225 35% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 35% 8%;
+
+    --primary: 221 69% 12%; /* Deep Space Navy */
+    --primary-foreground: 33 100% 95%;
+
+    --secondary: 210 24% 94%;
+    --secondary-foreground: 225 35% 12%;
+
+    --muted: 214 23% 90%;
+    --muted-foreground: 226 20% 40%;
+
+    --accent: 17 100% 61%; /* Electric Tangerine */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 26% 86%;
+    --input: 210 26% 86%;
+    --ring: 17 100% 61%;
+
+    --radius: 1.5rem;
+
+    --mint: 153 100% 68%;
+    --ink: 216 64% 10%;
+    --cloud: 210 25% 98%;
+    --slate: 225 19% 30%;
+    --night: 218 70% 8%;
+  }
+
+  [data-theme="dark"] {
+    --background: 220 70% 6%;
+    --foreground: 33 100% 95%;
+
+    --card: 220 64% 10%;
+    --card-foreground: 33 100% 95%;
+
+    --popover: 220 64% 10%;
+    --popover-foreground: 33 100% 95%;
+
+    --primary: 219 64% 92%;
+    --primary-foreground: 219 70% 8%;
+
+    --secondary: 220 45% 16%;
+    --secondary-foreground: 33 100% 95%;
+
+    --muted: 220 30% 18%;
+    --muted-foreground: 210 40% 80%;
+
+    --accent: 19 96% 63%;
+    --accent-foreground: 220 70% 8%;
+
+    --border: 220 35% 24%;
+    --input: 220 35% 24%;
+    --ring: 19 96% 63%;
+
+    --mint: 153 100% 72%;
+    --cloud: 220 64% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-feature-settings: "salt" on, "ss01" on;
+    background-color: hsl(var(--background));
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-[#ffb877] to-mint;
+  }
+
+  .glow-primary {
+    box-shadow: 0 25px 60px -30px rgba(11, 19, 43, 0.45);
+  }
+
+  .glow-sm {
+    box-shadow: 0 25px 40px -30px rgba(11, 19, 43, 0.25);
+  }
+
+  .border-glow {
+    border-color: hsl(var(--accent) / 0.4);
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
+    background-size: 70px 70px;
+  }
+
+  .scribble-grid {
+    background-image:
+      linear-gradient(120deg, rgba(11, 19, 43, 0.05) 1px, transparent 0),
+      linear-gradient(210deg, rgba(11, 19, 43, 0.05) 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+
+  .sunburst {
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(93, 255, 187, 0.4), transparent 45%),
+      radial-gradient(circle at 80% 0%, rgba(255, 107, 53, 0.35), transparent 55%),
+      linear-gradient(135deg, #0b132b, #142043 70%);
+  }
+
+
+  .timeline-line {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(11, 19, 43, 0), rgba(11, 19, 43, 0.5));
+  }
+
+  .timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #0b132b;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 6px rgba(11, 19, 43, 0.1);
+  }
+
+  .skill-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 243, 255, 0.9));
+    box-shadow: 0 25px 60px -35px rgba(11, 19, 43, 0.35);
+  }
+
+  .parent-table {
+    box-shadow: 0 35px 80px -45px rgba(11, 19, 43, 0.4);
+    border: 1px solid rgba(11, 19, 43, 0.08);
+  }
+
+  .quote-card {
+    background: linear-gradient(135deg, #0b132b, #1b2d55);
+    box-shadow: 0 45px 120px rgba(7, 10, 24, 0.8);
+  }
+
+  .cta-form input,
+  .cta-form textarea {
+    @apply rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-base text-foreground placeholder:text-foreground/50;
+  }
+
+  [data-theme="dark"] .cta-form input,
+  [data-theme="dark"] .cta-form textarea {
+    @apply border-white/10 bg-white/5 text-white placeholder:text-white/60;
+  }
+
+  .chatbot-shadow {
+    box-shadow: 0 25px 60px rgba(8, 10, 20, 0.7);
+  }
+}
