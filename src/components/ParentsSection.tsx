@@ -1,23 +1,24 @@
+import { motion } from "framer-motion";
 import { MapPin, UtensilsCrossed, Clock3, ShieldCheck, HeartHandshake } from "lucide-react";
 
 const parentInfo = [
   {
     icon: MapPin,
     label: "Lokalita",
-    value: "Bratislava · Staré Mesto",
-    detail: "Kampus Umelka, bezpečné prostredie s vlastným dvorom.",
+    value: "Bratislava",
+    detail: "Bezpečné prostredie s vlastným dvorom a moderným vybavením.",
   },
   {
     icon: UtensilsCrossed,
     label: "Strava",
-    value: "3× denne",
-    detail: "Brain-food menu + ovocný bar a pitný režim.",
+    value: "3x denne",
+    detail: "Zdravé menu, ovocný bar a pitný režim po celý deň.",
   },
   {
     icon: Clock3,
     label: "Čas",
-    value: "08:00 – 17:00",
-    detail: "Možnosť skoršieho príchodu a neskoršieho odchodu.",
+    value: "08:00 - 17:00",
+    detail: "Možnosť skoršieho príchodu a neskoršieho vyzdvihnutia.",
   },
   {
     icon: ShieldCheck,
@@ -29,32 +30,49 @@ const parentInfo = [
     icon: HeartHandshake,
     label: "Bezpečnosť",
     value: "Poistenie v cene",
-    detail: "Zdravotník on-site, kontaktná linka pre rodičov.",
+    detail: "Zdravotník na mieste, kontaktná linka pre rodičov.",
   },
 ];
 
 const ParentsSection = () => {
   return (
-    <section className="bg-secondary py-24" id="parents">
+    <section className="relative z-10 py-24 lg:py-32" id="parents">
       <div className="container">
-        <p className="text-xs uppercase tracking-[0.45em] text-foreground/60">Pre rodičov</p>
-        <h2 className="mt-4 text-4xl font-display text-primary">Transparentná logistika & bezpečnosť.</h2>
-        <p className="mt-3 text-lg text-muted-foreground max-w-3xl">
-          Biznis časť je seriózna, ale rovnako vážne berieme dohľad, stravu a komunikačné kanály. Všetko, čo by mama chcela
-          vedieť, je tu.
-        </p>
-        <div className="parent-table mt-10 grid gap-6 rounded-[32px] bg-white/90 p-8 md:grid-cols-2">
-          {parentInfo.map((item) => (
-            <div key={item.label} className="flex gap-4 rounded-2xl border border-border/70 bg-white/80 p-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary">
-                <item.icon className="h-6 w-6 text-primary" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 max-w-2xl"
+        >
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Pre rodičov</p>
+          <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
+            Všetko, čo potrebujete vedieť.
+          </h2>
+          <p className="mt-3 text-lg text-white/45">
+            Biznis časť je seriózna, ale rovnako vážne berieme dohľad, stravu a komunikáciu s vami. Transparentnosť je pre nás priorita.
+          </p>
+        </motion.div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {parentInfo.map((item, index) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.08, duration: 0.4 }}
+              whileHover={{ y: -8, rotateX: 2, rotateY: -2, scale: 1.03, transition: { type: "spring", stiffness: 400, damping: 25 } }}
+              style={{ transformPerspective: 800 }}
+              className="glass-panel-soft rounded-2xl p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
+                <item.icon className="h-5 w-5 text-white/60" />
               </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">{item.label}</p>
-                <p className="text-xl font-display text-primary">{item.value}</p>
-                <p className="text-sm text-muted-foreground">{item.detail}</p>
-              </div>
-            </div>
+              <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-white/30">{item.label}</p>
+              <p className="mt-1 text-xl font-semibold text-white">{item.value}</p>
+              <p className="mt-2 text-sm text-white/40">{item.detail}</p>
+            </motion.div>
           ))}
         </div>
       </div>

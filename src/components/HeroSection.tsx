@@ -1,125 +1,101 @@
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import heroImg from "@/assets/IMG_6498.JPG";
-import { ArrowRight, Sparkles, PiggyBank, Target, Users, Clock3 } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, Users, Sparkles, Calendar } from "lucide-react";
+import ReservationModal from "./ReservationModal";
 
 const stats = [
-  { value: "5 dní", label: "produktový sprint" },
-  { value: "28 miest", label: "limit na turnus" },
-  { value: "6 mentorov", label: "z praxe" },
-];
-
-const heroTags = ["Biznis tábor", "11 – 15 rokov", "Bratislava", "Limit 28 detí"];
-
-const heroHighlights = [
-  { icon: PiggyBank, title: "Finančné IQ", desc: "Cashflow, ceny a mini investície v praxi." },
-  { icon: Target, title: "Produkt & AI", desc: "Od idey po MVP, používanie AI ako nástroja." },
-  { icon: Users, title: "Pitch & tím", desc: "Storytelling, leadership a zdravá tímová dynamika." },
-];
-
-const dayFlow = [
-  { time: "08:30", activity: "Kick-off + sprint ciele" },
-  { time: "12:00", activity: "Build blok + brain-food" },
-  { time: "15:00", activity: "Field quest / šport" },
-  { time: "17:00", activity: "Demo circle pre rodičov" },
+  { value: "5 dní", label: "intenzívny program" },
+  { value: "28", label: "max. detí na turnus" },
+  { value: "6", label: "skúsených mentorov" },
 ];
 
 const HeroSection = () => {
-  return (
-    <section className="relative overflow-hidden bg-[#f7fbff]" id="hero">
-      <div className="absolute inset-x-0 top-0 h-32 bg-white" aria-hidden />
-      <div className="absolute inset-x-0 top-16 flex justify-between px-10" aria-hidden>
-        <span className="h-24 w-24 rounded-full bg-white shadow-[0_25px_60px_rgba(20,54,94,0.08)]" />
-        <span className="h-16 w-16 rounded-full bg-white shadow-[0_20px_50px_rgba(20,54,94,0.08)]" />
-        <span className="h-20 w-20 rounded-full bg-white shadow-[0_20px_50px_rgba(20,54,94,0.08)]" />
-      </div>
+  const [showReservation, setShowReservation] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-      <div className="container relative z-10 grid gap-12 py-24 lg:grid-cols-[1.1fr_0.9fr]">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary/70">
-            <Sparkles className="h-4 w-4 text-accent" />
-            BusinessCamp · Bratislava
+  return (
+    <section ref={heroRef} className="relative z-10 flex min-h-screen items-center pt-16" id="hero">
+      <motion.div style={{ y: heroY, opacity: heroOpacity }} className="container relative z-10 py-24 lg:py-32">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl"
+        >
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-xs font-medium text-white/50 backdrop-blur-sm">
+            <Sparkles className="h-3.5 w-3.5" />
+            BusinessCamp · Bratislava · Leto 2026
           </div>
 
-          <h1 className="mt-6 text-[clamp(2.8rem,6vw,4.6rem)] leading-[1.08] text-primary">
-            Zmeň nápad na reálny produkt a tím.
+          <h1 className="mt-8 text-[clamp(2.5rem,6vw,5rem)] font-bold leading-[1.05] tracking-tight text-white">
+            Letný tábor, kde vaše dieťa
+            <span className="text-gradient"> postaví vlastný biznis.</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Moderný biznis tábor, kde decká v priebehu týždňa prejdú celý produktový cyklus. Žiadne sci-fi efekty, len jasná vízia,
-            mentori z praxe a prostredie, ktoré dýcha dôverou.
+
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/50">
+            5-dňový program pre deti 11 – 15 rokov. Od nápadu k produktu, od prototypu k prezentácii pred rodičmi. Bez obrazoviek celý deň — reálna práca v tíme s mentormi z praxe.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            {heroTags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-primary/10 bg-white px-4 py-2 text-xs font-semibold text-primary/80 shadow-[0_10px_25px_rgba(15,35,70,0.08)]"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {heroHighlights.map((item) => (
-              <div key={item.title} className="rounded-3xl border border-primary/10 bg-white px-5 py-4 shadow-[0_25px_60px_rgba(15,35,70,0.08)]">
-                <item.icon className="h-6 w-6 text-accent" />
-                <p className="mt-3 text-lg font-semibold text-primary">{item.title}</p>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <Button variant="hero" size="lg" className="rounded-full px-8 text-base">
+            <button
+              onClick={() => setShowReservation(true)}
+              className="flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-white/90"
+            >
               Rezervovať miesto
               <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="rounded-full border-primary/20 bg-white px-8 text-base text-primary hover:bg-primary/5"
+            </button>
+            <a
+              href="#program"
+              className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-7 py-3.5 text-sm font-medium text-white/70 backdrop-blur-sm transition hover:bg-white/[0.08] hover:text-white"
             >
-              Zobraziť denný plán
-            </Button>
-          </div>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {stats.map((stat) => (
-              <div key={stat.label} className="rounded-3xl border border-primary/10 bg-white px-5 py-5 text-left shadow-[0_20px_55px_rgba(15,35,70,0.07)]">
-                <p className="text-3xl font-display text-primary">{stat.value}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.35em] text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
+              Zobraziť program
+            </a>
           </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="relative"
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-16 grid gap-4 sm:grid-cols-3"
         >
-          <div className="rounded-[40px] border border-primary/10 bg-white p-4 shadow-[0_35px_90px_rgba(15,35,70,0.12)]">
-            <img src={heroImg} alt="Pitch day moment" loading="lazy" className="h-[460px] w-full rounded-[32px] object-cover" />
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+              whileHover={{ y: -6, scale: 1.03, rotateX: 2, rotateY: -2, transition: { type: "spring", stiffness: 400, damping: 25 } }}
+              style={{ transformPerspective: 800 }}
+              className="glass-panel-soft rounded-2xl px-6 py-5"
+            >
+              <p className="text-3xl font-bold text-white">{stat.value}</p>
+              <p className="mt-1 text-xs font-medium uppercase tracking-widest text-white/35">{stat.label}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="mt-12 flex flex-wrap items-center gap-6 text-sm text-white/35"
+        >
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            <span>Pre deti 11 – 15 rokov</span>
           </div>
-          <div className="absolute -bottom-10 left-1/2 w-[85%] -translate-x-1/2 rounded-[28px] border border-primary/10 bg-white p-5 shadow-[0_25px_65px_rgba(15,35,70,0.12)]">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-muted-foreground">
-              <Clock3 className="h-4 w-4 text-accent" />
-              Denný rytmus
-            </div>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {dayFlow.map((slot) => (
-                <li key={slot.time} className="flex items-center gap-3">
-                  <span className="font-display text-lg text-primary">{slot.time}</span>
-                  <span>{slot.activity}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            <span>Júl 2026 · Bratislava</span>
           </div>
         </motion.div>
-      </div>
-      <div className="pb-16" />
+      </motion.div>
+
+      <ReservationModal open={showReservation} onClose={() => setShowReservation(false)} />
     </section>
   );
 };

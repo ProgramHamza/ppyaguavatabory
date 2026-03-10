@@ -8,27 +8,27 @@ import SocialProofSection from "@/components/SocialProofSection";
 import ParentsSection from "@/components/ParentsSection";
 import ScheduleSection from "@/components/ScheduleSection";
 import CTASection from "@/components/CTASection";
+import ContactForm from "@/components/ContactForm";
+import MapSection from "@/components/MapSection";
 import Footer from "@/components/Footer";
+import MetaballBackground from "@/components/MetaballBackground";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-[#080808] grid-overlay">
+      <MetaballBackground />
       <Navbar />
       <HeroSection />
-      <div id="program" className="space-y-0">
-        <FeaturesSection />
-        <SkillTreeSection />
-      </div>
+      <FeaturesSection />
+      <SkillTreeSection />
       <ExperienceGallery />
-      <div id="terminy">
-        <ScheduleSection />
-      </div>
+      <ScheduleSection />
       <ParentsSection />
       <MentorShowcase />
       <SocialProofSection />
-      <div id="prihlaska">
-        <CTASection />
-      </div>
+      <CTASection />
+      <ContactForm />
+      <MapSection />
       <Footer />
     </div>
   );

@@ -24,7 +24,7 @@ const ProgressBar = () => {
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-[80] h-1 bg-transparent">
       <div
-        className="h-full origin-left rounded-r-full bg-gradient-to-r from-primary via-accent to-mint transition-[width] duration-150"
+        className="h-full origin-left rounded-r-full bg-white/60 transition-[width] duration-150"
         style={{ width: `${progress}%` }}
       />
     </div>

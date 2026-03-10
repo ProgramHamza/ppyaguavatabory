@@ -1,102 +1,118 @@
 import { motion } from "framer-motion";
-import { Coins, Mic2, Users, Trophy, Joystick } from "lucide-react";
+import { Coins, Mic2, Users, Trophy } from "lucide-react";
 
 const perks = [
   {
     icon: Coins,
     label: "Finančné IQ",
-    points: "+20",
-    desc: "Rozpočet, cashflow, investičné misie a burzové hry.",
+    coins: "+20 mincí",
+    desc: "Rozpočet, cashflow, investičné misie a burzové hry v praxi.",
   },
   {
     icon: Mic2,
-    label: "Prezentačné skills",
-    points: "+15",
-    desc: "Storyboarding, rétorika, improvizačné cvičenia.",
+    label: "Prezentačné zručnosti",
+    coins: "+15 mincí",
+    desc: "Storyboarding, rétorika a improvizačné cvičenia pred publikom.",
   },
   {
     icon: Users,
-    label: "Networking",
-    points: "+30",
-    desc: "Peer feedback, speed-meetings, community večery.",
+    label: "Tímová spolupráca",
+    coins: "+30 mincí",
+    desc: "Vzájomný feedback, tímové výzvy a rozvoj leadershipu.",
   },
   {
     icon: Trophy,
-    label: "Team Spirit",
-    points: "+25",
-    desc: "Športové questy, kooperatívne výzvy, leadership badge.",
+    label: "Odvaha & iniciatíva",
+    coins: "+25 mincí",
+    desc: "Športové questy, kooperatívne výzvy a osobný rast.",
   },
 ];
 
 const sideRewards = [
   {
-    title: "XP systém",
-    desc: "Každý účastník zbiera body za odvahu, pomoc tímu a výsledky. leaderboard ≠ tlak, ale motivácia.",
+    title: "Táborové mince",
+    desc: "Každý účastník zbiera virtuálne mince za odvahu, pomoc tímu a výsledky. Motivácia bez tlaku — na konci týždňa sa dajú vymeniť za ceny.",
   },
   {
-    title: "Digitálna karta",
-    desc: "Na konci týždňa získavaš digitálny profil s hodnotením mentorov a odporúčaním na strednú.",
+    title: "Digitálny profil",
+    desc: "Na konci týždňa vaše dieťa získa digitálny profil s hodnotením mentorov a odporúčaním — pamiatka a motivácia do budúcnosti.",
   },
 ];
 
 const SkillTreeSection = () => {
   return (
-    <section className="bg-white py-24 lg:py-32" id="skilltree">
-      <div className="container grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+    <section className="relative z-10 py-24 lg:py-32" id="skilltree">
+      <div className="container grid gap-8 lg:grid-cols-2">
         <div>
-          <p className="text-xs uppercase tracking-[0.45em] text-slate">Gamifikácia</p>
-          <h2 className="mt-4 text-4xl font-display text-primary sm:text-5xl">Čo získaš do svojho skill-tree?</h2>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Štruktúrovaný XP systém robí z učenia hru: každý deň odomykáš nové schopnosti a vidíš, ako rastie tvoj základný
-            "founder" profil.
-          </p>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Motivácia</p>
+            <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
+              Čo vaše dieťa získa?
+            </h2>
+            <p className="mt-4 text-lg text-white/45">
+              Systém táborových mincí robí z učenia hru: každý deň vaše dieťa odomyká nové zručnosti a vidí svoj pokrok.
+            </p>
+          </motion.div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {perks.map((perk, index) => (
               <motion.div
                 key={perk.label}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.4 }}
+                transition={{ delay: index * 0.08, duration: 0.4 }}
                 viewport={{ once: true }}
-                className="skill-card rounded-[28px] border border-border/60 p-6"
+                whileHover={{ y: -8, rotateX: 2, rotateY: -2, scale: 1.03, transition: { type: "spring", stiffness: 400, damping: 25 } }}
+                style={{ transformPerspective: 800 }}
+                className="glass-panel-soft group rounded-2xl p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary">
-                    <perk.icon className="h-5 w-5 text-primary" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
+                    <perk.icon className="h-5 w-5 text-white/60" />
                   </div>
-                  <span className="text-2xl font-display text-accent">{perk.points}</span>
+                  <span className="text-sm font-semibold text-white/50">{perk.coins}</span>
                 </div>
-                <h3 className="mt-4 text-2xl font-display text-foreground">{perk.label}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{perk.desc}</p>
+                <h3 className="mt-4 text-lg font-semibold text-white">{perk.label}</h3>
+                <p className="mt-2 text-sm text-white/40">{perk.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-[40px] border border-border/70 bg-gradient-to-b from-primary to-[#050a18] p-8 text-white">
-          <p className="text-xs uppercase tracking-[0.45em] text-white/60">Bonus questy</p>
-          <h3 className="mt-3 text-3xl font-display">Denné questy a superschopnosti mentorov.</h3>
-          <p className="mt-4 text-white/75">
-            Mentori vystupujú ako "Business superschopnosti" – Marketingový mág, Excel Ninja, Pitch Sensei. Pri hoveri sa
-            odhalí ich skill a tip.
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="glass-panel rounded-2xl p-8"
+        >
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Bonusy</p>
+          <h3 className="mt-3 text-2xl font-semibold text-white">Denné výzvy a odmeny.</h3>
+          <p className="mt-3 text-sm text-white/45">
+            Mentori zadávajú špeciálne misie — za splnenie získavajú deti extra táborové mince, ktoré na konci týždňa premenia na reálne ceny.
           </p>
-          <ul className="mt-6 space-y-4 text-sm text-white/80">
+
+          <ul className="mt-8 space-y-4">
             {sideRewards.map((reward) => (
-              <li key={reward.title} className="rounded-3xl border border-white/10 bg-white/5 px-4 py-3">
-                <h4 className="font-display text-lg text-white">{reward.title}</h4>
-                <p>{reward.desc}</p>
+              <li key={reward.title} className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-4">
+                <h4 className="font-semibold text-white">{reward.title}</h4>
+                <p className="mt-1 text-sm text-white/40">{reward.desc}</p>
               </li>
             ))}
           </ul>
-          <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/80">
-            <p className="text-xs uppercase tracking-[0.45em] text-mint">mentor spotlight</p>
-            <p className="mt-2">Hover efekt mení fotku z čiernobielej na farebnú a zobrazí superschopnosť mentora.</p>
+
+          <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-4">
+            <p className="text-xs font-medium uppercase tracking-widest text-white/30">Pre rodičov</p>
+            <p className="mt-2 text-sm text-white/50">
+              Denné reporty vám ukážu, koľko mincí vaše dieťa získalo a za čo. Vždy viete, ako sa mu darí.
+            </p>
           </div>
-          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.4em]">
-            <Joystick className="h-4 w-4 text-mint" />
-            Skill-tree je súčasťou online profilu účastníka
-          </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

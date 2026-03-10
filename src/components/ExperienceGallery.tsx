@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import galleryOne from "@/assets/DSC01753.jpg";
 import galleryTwo from "@/assets/IMG_6156.JPG";
 import galleryThree from "@/assets/IMG_6207.JPG";
@@ -7,77 +8,118 @@ import galleryFour from "@/assets/P7100261.JPG";
 const timeline = [
   {
     time: "08:30",
-    title: "Kick-off & AI briefing",
-    desc: "Čo ideme stavať dnes? Mentori zadávajú súťažné misie a decká tvoria backlog.",
+    title: "Ranný kick-off",
+    desc: "Čo ideme stavať dnes? Mentori zadávajú denné misie a deti si plánujú úlohy.",
   },
   {
     time: "11:00",
-    title: "Build + test blok",
-    desc: "Prototypy vo Figme aj z kartónu, user testy na rovesníkoch.",
+    title: "Build & test blok",
+    desc: "Prototypovanie, testovanie nápadov na rovesníkoch a spolupráca v tíme.",
   },
   {
     time: "14:00",
-    title: "Field quest alebo šport",
-    desc: "Ekonomické hry v meste, športové výzvy so skórovaním XP za tímovosť.",
+    title: "Terénne hry & šport",
+    desc: "Ekonomické simulácie v meste, športové výzvy a zbieranie táborových mincí.",
   },
   {
     time: "16:30",
-    title: "Demo circle + report",
-    desc: "Každý tím prezentuje progress. Posielame rodičom mikro report a fotku dňa.",
+    title: "Demo circle",
+    desc: "Každý tím prezentuje pokrok. Rodičia dostávajú mikro report a fotku dňa.",
   },
 ];
 
 const gallery = [
-  { src: galleryOne, label: "Ideation lab", meta: "Pondelok", span: "md:col-span-2 md:row-span-2" },
-  { src: galleryTwo, label: "XP scoreboard", meta: "Popoludňajšie questy", span: "" },
-  { src: galleryThree, label: "Pitch coaching", meta: "Štvrtok", span: "" },
-  { src: galleryFour, label: "Team retro", meta: "Piatok", span: "md:col-span-2" },
+  { src: galleryOne, label: "Tímová práca", meta: "Pondelok", span: "md:col-span-2 md:row-span-2" },
+  { src: galleryTwo, label: "Terénne hry", meta: "Popoludnie", span: "" },
+  { src: galleryThree, label: "Pitch tréning", meta: "Štvrtok", span: "" },
+  { src: galleryFour, label: "Tímový retro", meta: "Piatok", span: "md:col-span-2" },
 ];
 
 const ExperienceGallery = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const galleryScale = useTransform(scrollYProgress, [0, 0.4], [0.88, 1]);
+  const galleryY = useTransform(scrollYProgress, [0, 0.4], [60, 0]);
+  const timelineY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
   return (
-    <section id="dennyplan" className="bg-white py-24 lg:py-32">
-      <div className="container grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <p className="text-xs uppercase tracking-[0.45em] text-slate">Denný priebeh</p>
-          <h2 className="mt-4 text-4xl font-display text-primary sm:text-5xl">Ako vyzerá BusinessCamp deň.</h2>
-          <p className="mt-4 max-w-xl text-lg text-muted-foreground">
-            Striedame hlbokú prácu, testovanie a pohyb. Každý blok má jasný výstup a XP body, ktoré vidíš v appke.
-          </p>
-          <div className="mt-8 space-y-4">
-            {timeline.map((slot) => (
-              <div key={slot.time} className="flex gap-4 rounded-3xl border border-border/60 bg-cloud px-4 py-4">
-                <div className="font-display text-3xl text-primary">{slot.time}</div>
+    <section ref={sectionRef} id="dennyplan" className="relative z-10 py-24 lg:py-32">
+      <div className="container grid gap-12 lg:grid-cols-2">
+        <motion.div style={{ y: timelineY }}>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Denný priebeh</p>
+            <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">Ako vyzerá deň v tábore.</h2>
+            <p className="mt-4 max-w-xl text-lg text-white/45">
+              Striedame prácu, testovanie a pohyb. Každý blok má jasný výstup — vy ako rodič vidíte výsledky cez denné reporty.
+            </p>
+          </motion.div>
+
+          <div className="mt-8 space-y-3">
+            {timeline.map((slot, index) => (
+              <motion.div
+                key={slot.time}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{
+                  x: 8,
+                  scale: 1.02,
+                  transition: { type: "spring", stiffness: 400, damping: 25 },
+                }}
+                className="glass-panel-soft flex gap-4 rounded-xl px-5 py-4"
+              >
+                <div className="text-2xl font-bold text-white/80">{slot.time}</div>
                 <div>
-                  <p className="text-sm uppercase tracking-[0.35em] text-slate">{slot.title}</p>
-                  <p className="text-sm text-muted-foreground">{slot.desc}</p>
+                  <p className="text-sm font-medium text-white/70">{slot.title}</p>
+                  <p className="text-sm text-white/40">{slot.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="grid auto-rows-[160px] grid-cols-2 gap-4 md:grid-cols-3"
+          style={{ scale: galleryScale, y: galleryY }}
+          className="grid auto-rows-[220px] grid-cols-2 gap-3 md:grid-cols-3"
         >
-          {gallery.map((item) => (
-            <div key={item.label} className={`group relative overflow-hidden rounded-[32px] border border-border/70 ${item.span}`}>
-              <img src={item.src} alt={item.label} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          {gallery.map((item, index) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.12, duration: 0.6 }}
+              whileHover={{
+                scale: 1.05,
+                rotateY: 4,
+                rotateX: -3,
+                transition: { type: "spring", stiffness: 300, damping: 20 },
+              }}
+              style={{ transformPerspective: 800 }}
+              className={`group relative overflow-hidden rounded-2xl border border-white/[0.08] ${item.span}`}
+            >
+              <img
+                src={item.src}
+                alt={item.label}
+                loading="lazy"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
               <div className="absolute bottom-4 left-4 text-white">
-                <p className="text-xs uppercase tracking-[0.45em] text-white/70">{item.meta}</p>
-                <p className="font-display text-2xl">{item.label}</p>
+                <p className="text-[10px] font-medium uppercase tracking-widest text-white/50">{item.meta}</p>
+                <p className="text-lg font-semibold">{item.label}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </div>
