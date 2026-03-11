@@ -1,60 +1,249 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, MessageCircle, SendHorizonal, X } from "lucide-react";
+import { Bot, ExternalLink, MapPin, MessageCircle, SendHorizonal, Sparkles, X } from "lucide-react";
+
+type MessageAuthor = "bot" | "user";
+
+interface Action {
+  label: string;
+  href?: string;
+  prompt?: string;
+}
 
 interface Message {
   id: number;
-  from: "bot" | "user";
+  from: MessageAuthor;
   text: string;
+  actions?: Action[];
+}
+
+interface Intent {
+  id: string;
+  keywords: string[];
+  answer: string;
+  actions?: Action[];
 }
 
 const quickPrompts = [
   "Je tábor vhodný pre začiatočníkov?",
-  "Koľko trvá jeden deň?",
-  "Ako vyzerá posledný deň?",
+  "Koľko stojí tábor?",
+  "Kde sa nachádzate?",
+  "Ako funguje rezervácia?",
 ];
 
-const getBotReply = (text: string) => {
-  const n = text.toLowerCase();
-  if (n.includes("začiatočník") || n.includes("neviem") || n.includes("vhodný"))
-    return "Samozrejme! Začíname od nuly. Mentori pracujú s každým dieťaťom individuálne.";
-  if (n.includes("trvá") || n.includes("čas") || n.includes("deň"))
-    return "Program prebieha od 8:00 do 17:00. Dopoludnia práca na projekte, popoludní hry a šport.";
-  if (n.includes("posledný") || n.includes("piatok") || n.includes("pitch"))
-    return "V piatok je Pitch Day — deti prezentujú svoj projekt pred rodičmi a hosťami. Srdečne vás pozývame!";
-  if (n.includes("strava") || n.includes("jedlo"))
-    return "Strava je zahrnutá v cene — 3 jedlá denne + ovocný bar. Vieme riešiť intolerancie.";
-  if (n.includes("cena") || n.includes("koľko") || n.includes("stojí"))
-    return "Cena sa pohybuje od 390€ v závislosti od turnusu. Zahŕňa stravu, materiály aj poistenie.";
-  return "Ďakujem za otázku! Pre viac informácií nás kontaktujte na mimoriadni@gmail.com.";
+const intents: Intent[] = [
+  {
+    id: "beginners",
+    keywords: ["zaciatocnik", "zaciatocnici", "prvykrat", "vhodny", "skusenosti", "neviem"],
+    answer:
+      "Áno. BusinessCamp je navrhnutý aj pre deti bez predchádzajúcich skúseností. Začíname od základov a mentori vedú tímy krok za krokom.",
+    actions: [{ label: "Pozrieť program", href: "#program" }],
+  },
+  {
+    id: "schedule",
+    keywords: ["den", "harmonogram", "cas", "trva", "kedy", "odkedy", "dokedy"],
+    answer:
+      "Program beží približne od 8:00 do 17:00. Dopoludnia deti stavajú produkt, popoludní majú terénne hry, šport a tímové výzvy.",
+    actions: [{ label: "Denný plán", href: "#dennyplan" }],
+  },
+  {
+    id: "pitch-day",
+    keywords: ["piatok", "pitch", "posledny", "prezentacia", "rodicia"],
+    answer:
+      "V piatok prebieha Pitch Day. Tímy odprezentujú svoj projekt pred rodičmi a hosťami, dostanú spätnú väzbu a uzavrú celý týždeň veľmi konkrétnym výsledkom.",
+    actions: [{ label: "Pozrieť program týždňa", href: "#program" }],
+  },
+  {
+    id: "price",
+    keywords: ["cena", "stoji", "kolko", "eur", "platba"],
+    answer:
+      "Cena turnusu je od 390 € do 410 € podľa termínu. V cene sú mentori, strava, materiály, poistenie aj piatkový Pitch Day.",
+    actions: [{ label: "Termíny a ceny", href: "#terminy" }],
+  },
+  {
+    id: "food",
+    keywords: ["strava", "jedlo", "obed", "ranajky", "alergia", "intolerancia"],
+    answer:
+      "Strava je zahrnutá v cene. Deti majú 3 jedlá denne, ovocný bar a pitný režim. Vieme riešiť aj intolerancie a individuálne obmedzenia.",
+    actions: [{ label: "Info pre rodičov", href: "#parents" }],
+  },
+  {
+    id: "location",
+    keywords: ["kde", "adresa", "lokalita", "zello", "zellova", "bratislava", "mapa"],
+    answer:
+      "Sme na adrese Žellova 6 v Bratislave. Lokalita je dobre dostupná autom aj MHD a mapu nájdete nižšie na stránke.",
+    actions: [
+      { label: "Otvoriť mapu na stránke", href: "#mapa" },
+      { label: "Google Maps", href: "https://www.google.com/maps/search/?api=1&query=%C5%BDellova+6+Bratislava" },
+    ],
+  },
+  {
+    id: "reservation",
+    keywords: ["rezervacia", "prihlaska", "prihlasit", "miesto", "termin", "kontaktujte"],
+    answer:
+      "Rezerváciu spravíte cez tlačidlo Predbežná rezervácia na stránke. Zanecháte email a tím sa vám ozve s ďalšími detailmi a potvrdením.",
+    actions: [
+      { label: "Prejsť na prihlásenie", href: "#prihlaska" },
+      { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
+    ],
+  },
+  {
+    id: "safety",
+    keywords: ["bezpecnost", "dozor", "poistenie", "zdravotnik"],
+    answer:
+      "Na tábore je zabezpečený dohľad mentorov a animátorov, poistenie je v cene a rodičia majú k dispozícii priebežnú komunikáciu aj kontaktnú linku.",
+    actions: [{ label: "Pre rodičov", href: "#parents" }],
+  },
+  {
+    id: "contact",
+    keywords: ["email", "telefon", "kontakt", "ozvat", "napisat"],
+    answer:
+      "Môžete nám napísať na mimoriadni@gmail.com alebo vyplniť kontaktný formulár priamo na stránke. Odpovedáme čo najskôr.",
+    actions: [
+      { label: "Kontaktný formulár", href: "#kontakt" },
+      { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
+    ],
+  },
+];
+
+const defaultReply: Message = {
+  id: 0,
+  from: "bot",
+  text:
+    "Tomuto som úplne presne nerozumel, ale viem pomôcť s cenou, termínmi, adresou, stravou, bezpečnosťou alebo rezerváciou.",
+  actions: [
+    { label: "Termíny a ceny", href: "#terminy" },
+    { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
+  ],
+};
+
+const initialMessages: Message[] = [
+  {
+    id: 1,
+    from: "bot",
+    text:
+      "Dobrý deň. Som BusinessCamp asistent a odpoviem na otázky o programe, cenách, lokalite, rezervácii a praktických veciach pre rodičov.",
+    actions: [
+      { label: "Koľko stojí tábor?", prompt: "Koľko stojí tábor?" },
+      { label: "Kde sa nachádzate?", prompt: "Kde sa nachádzate?" },
+    ],
+  },
+];
+
+const normalize = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const scoreIntent = (input: string, intent: Intent) => {
+  const normalized = normalize(input);
+  return intent.keywords.reduce((score, keyword) => {
+    if (normalized.includes(keyword)) {
+      return score + Math.max(2, keyword.length / 4);
+    }
+    return score;
+  }, 0);
+};
+
+const getBotReply = (text: string): Message => {
+  const bestMatch = intents
+    .map((intent) => ({ intent, score: scoreIntent(text, intent) }))
+    .sort((left, right) => right.score - left.score)[0];
+
+  if (!bestMatch || bestMatch.score < 2) {
+    return { ...defaultReply, id: Date.now() + 1 };
+  }
+
+  return {
+    id: Date.now() + 1,
+    from: "bot",
+    text: bestMatch.intent.answer,
+    actions: bestMatch.intent.actions,
+  };
 };
 
 const ChatbotWidget = () => {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, from: "bot", text: "Dobrý deň! Som tu pre vás. Spýtajte sa čokoľvek o BusinessCampe." },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const nextIdRef = useRef(100);
+
+  const statusText = useMemo(() => {
+    if (isTyping) {
+      return "Asistent píše...";
+    }
+    return "Online bez API kľúča";
+  }, [isTyping]);
 
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, open]);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, open, isTyping]);
+
+  const appendBotReply = (text: string) => {
+    const reply = getBotReply(text);
+    const delay = Math.min(1100, Math.max(350, reply.text.length * 8));
+
+    setIsTyping(true);
+    window.setTimeout(() => {
+      setMessages((prev) => [...prev, { ...reply, id: nextIdRef.current++ }]);
+      setIsTyping(false);
+    }, delay);
+  };
 
   const handleSend = (customText?: string) => {
     const text = (customText ?? input).trim();
-    if (!text) return;
-    setMessages((prev) => [...prev, { id: Date.now(), from: "user", text }]);
+    if (!text || isTyping) {
+      return;
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      { id: nextIdRef.current++, from: "user", text },
+    ]);
     setInput("");
-    const reply = getBotReply(text);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { id: Date.now() + 1, from: "bot", text: reply }]);
-    }, 500);
+    appendBotReply(text);
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     handleSend();
+  };
+
+  const renderAction = (action: Action) => {
+    if (action.href) {
+      const external = action.href.startsWith("http") || action.href.startsWith("mailto:");
+      return (
+        <a
+          key={action.label}
+          href={action.href}
+          target={external ? "_blank" : undefined}
+          rel={external ? "noreferrer" : undefined}
+          className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] px-2.5 py-1.5 text-[11px] text-white/55 transition hover:border-white/20 hover:text-white"
+        >
+          {action.label}
+          {external ? <ExternalLink className="h-3 w-3" /> : null}
+        </a>
+      );
+    }
+
+    return (
+      <button
+        key={action.label}
+        type="button"
+        onClick={() => handleSend(action.prompt)}
+        className="rounded-lg border border-white/[0.08] px-2.5 py-1.5 text-[11px] text-white/55 transition hover:border-white/20 hover:text-white"
+      >
+        {action.label}
+      </button>
+    );
   };
 
   return (
@@ -65,13 +254,19 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="glass-panel mb-3 w-80 overflow-hidden rounded-2xl"
+            transition={{ duration: 0.22 }}
+            className="glass-panel mb-3 w-[22rem] overflow-hidden rounded-2xl sm:w-[25rem]"
           >
             <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
-              <div className="flex items-center gap-2 text-sm font-medium text-white/80">
-                <Bot className="h-4 w-4 text-white/40" />
-                BusinessCamp asistent
+              <div>
+                <div className="flex items-center gap-2 text-sm font-medium text-white/90">
+                  <Bot className="h-4 w-4 text-white/45" />
+                  BusinessCamp asistent
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/35">
+                  <Sparkles className="h-3 w-3" />
+                  {statusText}
+                </div>
               </div>
               <button
                 type="button"
@@ -83,50 +278,76 @@ const ChatbotWidget = () => {
               </button>
             </div>
 
-            <div ref={scrollRef} className="max-h-72 space-y-3 overflow-y-auto px-4 py-4 text-sm">
-              {messages.map((m) => (
-                <div key={m.id} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[85%] rounded-xl px-3 py-2 ${
-                      m.from === "user"
-                        ? "bg-white text-black"
-                        : "bg-white/[0.06] text-white/80"
-                    }`}
-                  >
-                    {m.text}
+            <div ref={scrollRef} className="max-h-96 space-y-3 overflow-y-auto px-4 py-4 text-sm">
+              {messages.map((message) => (
+                <div key={message.id} className={`flex ${message.from === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className="max-w-[88%]">
+                    <div
+                      className={`rounded-2xl px-3 py-2.5 leading-relaxed ${
+                        message.from === "user"
+                          ? "bg-white text-black"
+                          : "bg-white/[0.06] text-white/82"
+                      }`}
+                    >
+                      {message.text}
+                    </div>
+                    {message.actions?.length ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {message.actions.map(renderAction)}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               ))}
+
+              {isTyping ? (
+                <div className="flex justify-start">
+                  <div className="rounded-2xl bg-white/[0.06] px-3 py-2 text-white/55">
+                    <span className="inline-flex gap-1 align-middle">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/60" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/50 [animation-delay:120ms]" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40 [animation-delay:240ms]" />
+                    </span>
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <div className="border-t border-white/[0.08] px-4 py-3">
               <div className="mb-3 flex flex-wrap gap-1.5">
-                {quickPrompts.map((p) => (
+                {quickPrompts.map((prompt) => (
                   <button
-                    key={p}
+                    key={prompt}
                     type="button"
-                    onClick={() => handleSend(p)}
+                    onClick={() => handleSend(prompt)}
                     className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-[11px] text-white/40 transition hover:border-white/20 hover:text-white/70"
                   >
-                    {p}
+                    {prompt}
                   </button>
                 ))}
               </div>
+
               <form onSubmit={handleSubmit} className="flex items-center gap-2">
                 <input
-                  className="glass-input h-10 flex-1 rounded-xl px-4 text-sm"
-                  placeholder="Napíšte otázku..."
+                  className="glass-input h-11 flex-1 rounded-xl px-4 text-sm"
+                  placeholder="Napíšte otázku o tábore..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-black transition hover:bg-white/90"
+                  disabled={isTyping}
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
                   aria-label="Odoslať"
                 >
                   <SendHorizonal className="h-4 w-4" />
                 </button>
               </form>
+
+              <div className="mt-3 flex items-center gap-1.5 text-[11px] text-white/28">
+                <MapPin className="h-3 w-3" />
+                Žellova 6, Bratislava
+              </div>
             </div>
           </motion.div>
         )}
@@ -134,8 +355,9 @@ const ChatbotWidget = () => {
 
       <button
         type="button"
-        onClick={() => setOpen((p) => !p)}
+        onClick={() => setOpen((prev) => !prev)}
         className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-black shadow-[0_10px_40px_rgba(255,255,255,0.1)] transition hover:bg-white/90"
+        aria-label="Otvoriť chat asistenta"
       >
         <MessageCircle className="h-5 w-5" />
       </button>
