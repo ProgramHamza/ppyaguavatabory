@@ -26,7 +26,7 @@ interface Intent {
 }
 
 const quickPrompts = [
-  "Je tábor vhodný pre 9-ročné dieťa?",
+  "Je tábor vhodný pre 8-ročné dieťa?",
   "Ako fungujú StartCoiny?",
   "Čo dieťa vytvorí za 5 dní?",
   "Ako rezervujem miesto?",
@@ -37,7 +37,7 @@ const intents: Intent[] = [
     id: "beginners",
     keywords: ["zaciatocnik", "zaciatocnici", "prvykrat", "vhodny", "skusenosti", "neviem"],
     answer:
-      "Áno. Future Foudners Mini je navrhnutý aj pre deti bez predchádzajúcich skúseností. Program je vedený krok za krokom pre vek 9–12 rokov.",
+      "Áno. Future Foudners Mini je navrhnutý aj pre deti bez predchádzajúcich skúseností. Program je vedený krok za krokom pre vek 8–14 rokov.",
     actions: [{ label: "Pozrieť program", href: "#program" }],
   },
   {

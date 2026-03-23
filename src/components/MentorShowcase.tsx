@@ -1,5 +1,6 @@
 ﻿import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { showImages } from "@/lib/env";
 
 const mentors = [
   {
@@ -79,11 +80,15 @@ const MentorShowcase = () => {
               className="glass-panel group overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/20"
             >
               <div className="relative h-80 overflow-hidden">
-                <img
-                  src={mentor.image}
-                  alt={mentor.name}
-                  className="h-full w-full object-cover grayscale transition duration-700 group-hover:scale-110 group-hover:grayscale-0"
-                />
+                {showImages ? (
+                  <img
+                    src={mentor.image}
+                    alt={mentor.name}
+                    className="h-full w-full object-cover grayscale transition duration-700 group-hover:scale-110 group-hover:grayscale-0"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(245,166,35,0.26),transparent_56%),linear-gradient(140deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))]" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-3 left-4 rounded-lg bg-white/10 px-3 py-1 text-[10px] font-medium uppercase tracking-widest text-white/80 backdrop-blur-sm">
                   {mentor.power}

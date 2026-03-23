@@ -3,17 +3,28 @@ import { motion, useScroll, useTransform, type MotionValue } from "framer-motion
 import { ArrowRight } from "lucide-react";
 import ReservationModal from "./ReservationModal";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { showImages } from "@/lib/env";
+import heroAcademy from "@/assets/hero-academy.jpg";
+import pitchDay from "@/assets/pitch-day.jpg";
+import campWorkshop from "@/assets/IMG_6207.JPG";
 
 const stats = [
   { value: "5 dní", label: "intenzívny program" },
-  { value: "9–12", label: "rokov, ideálny vek" },
+  { value: "8–14", label: "rokov, ideálny vek" },
   { value: "max. 30", label: "detí na turnus" },
 ];
 
 const trustBadges = [
   "Leto 2026 · Bratislava",
-  "Pre deti 9–12 rokov",
+  "Pre deti 8–14 rokov",
+  "Pilotný ročník programu",
   "Vlastný produkt za 5 dní",
+];
+
+const heroGallery = [
+  { src: heroAcademy, alt: "Deti počas programu v tíme", label: "Tímová práca" },
+  { src: pitchDay, alt: "Pitch prezentácia pred porotou", label: "Pitch day" },
+  { src: campWorkshop, alt: "Workshop a tvorba produktu", label: "Workshop" },
 ];
 
 const headlineLines = [
@@ -444,7 +455,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: prefersReducedMotion ? 0 : 0.45, duration: prefersReducedMotion ? 0 : 0.7 }}
           >
-            Letný denný tábor v Bratislave, kde deti 9–12 rokov postavia reálny biznis - od nápadu až po prvý predaj.
+            Letný denný tábor v Bratislave, kde deti 8–14 rokov postavia reálny biznis - od nápadu až po prvý predaj.
             Žiadna teória. Merateľné výsledky.
           </motion.p>
 
@@ -502,6 +513,24 @@ const HeroSection = () => {
               </span>
             ))}
           </motion.div>
+
+          {showImages ? (
+            <motion.div
+              initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: prefersReducedMotion ? 0 : 0.72, duration: prefersReducedMotion ? 0 : 0.7 }}
+              className="mt-8 grid gap-3 sm:grid-cols-3"
+            >
+              {heroGallery.map((item) => (
+                <figure key={item.alt} className="relative overflow-hidden rounded-2xl border border-primary/20">
+                  <img src={item.src} alt={item.alt} className="h-28 w-full object-cover md:h-32" loading="lazy" />
+                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-3 py-2 text-xs font-medium text-white/90">
+                    {item.label}
+                  </figcaption>
+                </figure>
+              ))}
+            </motion.div>
+          ) : null}
         </motion.div>
 
         <motion.div

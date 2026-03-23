@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import ProgressBar from "@/components/ProgressBar";
 import ChatbotWidget from "@/components/ChatbotWidget";
 import ThemeProvider from "@/components/ThemeProvider";
+import FloatingProjectBadge from "@/components/FloatingProjectBadge";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <FloatingProjectBadge />
           <ProgressBar />
           <Routes>
             <Route path="/" element={<Index />} />

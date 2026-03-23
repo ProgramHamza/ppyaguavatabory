@@ -154,14 +154,14 @@ const ContactForm = () => {
 
               <div>
                 <label htmlFor="child-age" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
-                  Vek dieťaťa (9–12)
+                  Vek dieťaťa (8–14)
                 </label>
                 <input
                   id="child-age"
                   type="number"
                   required
-                  min={9}
-                  max={12}
+                  min={8}
+                  max={14}
                   value={formData.childAge}
                   onChange={(e) => setFormData((prev) => ({ ...prev, childAge: e.target.value }))}
                   placeholder="10"

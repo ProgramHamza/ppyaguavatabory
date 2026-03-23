@@ -2,7 +2,9 @@ import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { BadgeDollarSign, Coins, Gavel, Scale } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { showImages } from "@/lib/env";
 import SectionTypingBackdrop from "./SectionTypingBackdrop";
+import economyImage from "@/assets/IMG_6498.JPG";
 
 const economyCards = [
   {
@@ -146,6 +148,21 @@ const HernaEkonomika = () => {
             Deti sa učia financie cez prax. Každé rozhodnutie v tíme má okamžitý dopad na rozpočet, výsledok aj poradie.
           </p>
         </div>
+
+        {showImages ? (
+          <motion.figure
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
+            className="mb-8 overflow-hidden rounded-3xl border border-primary/20"
+          >
+            <img src={economyImage} alt="Herná ekonomika počas tábora" className="h-48 w-full object-cover md:h-56" loading="lazy" />
+            <figcaption className="bg-primary/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
+              Trh · rozpočet · rozhodovanie
+            </figcaption>
+          </motion.figure>
+        ) : null}
 
         <div className="grid gap-4 md:grid-cols-2">
           {economyCards.map((item, index) => (

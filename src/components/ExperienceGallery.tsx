@@ -9,7 +9,10 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { showImages } from "@/lib/env";
 import SectionTypingBackdrop from "./SectionTypingBackdrop";
+import awardsMomentA from "@/assets/DSC01757.jpg";
+import awardsMomentB from "@/assets/IMG_6383.JPG";
 
 const awards = [
   {
@@ -48,6 +51,11 @@ const awardsTypingItems = [
   { text: "Ocenenia", className: "left-[6%] top-[14%]", opacity: 0.08, duration: 7.4, delay: 0.2 },
   { text: "Výhra", className: "right-[8%] top-[46%]", opacity: 0.07, duration: 6.9, delay: 0.9 },
   { text: "Kreativita", className: "left-[16%] bottom-[8%]", opacity: 0.06, duration: 8.2, delay: 1.3 },
+];
+
+const awardsGallery = [
+  { src: awardsMomentA, alt: "Deti s oceneniami počas finále", label: "Ocenenia" },
+  { src: awardsMomentB, alt: "Tímové oslavy po prezentácii", label: "Finále" },
 ];
 
 const springConfig = { stiffness: 220, damping: 20, mass: 0.8 };
@@ -183,6 +191,25 @@ const OceneniaSection = () => {
             Súťaž je férová, motivujúca a postavená tak, aby každé dieťa odchádzalo s úspechom, nie sklamaním.
           </p>
         </div>
+
+        {showImages ? (
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
+            className="mb-8 grid gap-3 sm:grid-cols-2"
+          >
+            {awardsGallery.map((item) => (
+              <figure key={item.alt} className="relative overflow-hidden rounded-2xl border border-primary/20">
+                <img src={item.src} alt={item.alt} className="h-40 w-full object-cover md:h-48" loading="lazy" />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-3 py-2 text-xs font-medium text-white/90">
+                  {item.label}
+                </figcaption>
+              </figure>
+            ))}
+          </motion.div>
+        ) : null}
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {awards.map((award, index) => (

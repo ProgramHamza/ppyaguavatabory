@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
+import { showImages } from "@/lib/env";
 
 const partners = [
   { name: "SpMNDaG", logo: "/sponsors/logo-full.svg" },
@@ -53,14 +54,20 @@ const SocialProofSection = () => {
                 }}
                 className="flex flex-col items-center justify-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 transition hover:border-white/15"
               >
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="h-10 max-w-[120px] object-contain brightness-0 invert opacity-50 transition-opacity hover:opacity-80"
-                />
-                <span className="text-[10px] font-medium uppercase tracking-widest text-white/25">
-                  {partner.name}
-                </span>
+                {showImages ? (
+                  <>
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="h-10 max-w-[120px] object-contain brightness-0 invert opacity-50 transition-opacity hover:opacity-80"
+                    />
+                    <span className="text-[10px] font-medium uppercase tracking-widest text-white/25">
+                      {partner.name}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">{partner.name}</span>
+                )}
               </motion.div>
             ))}
           </div>

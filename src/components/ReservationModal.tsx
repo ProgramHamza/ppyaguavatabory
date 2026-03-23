@@ -15,7 +15,7 @@ const ReservationModal = ({ open, onClose }: ReservationModalProps) => {
     e.preventDefault();
     if (!email) return;
 
-    const mailtoLink = `mailto:mimoriadni@gmail.com?subject=${encodeURIComponent("Predbežná rezervácia - Future Foudners Mini")}&body=${encodeURIComponent(`Dobrý deň,\n\nmám záujem o predbežnú rezerváciu miesta v tábore Future Foudners Mini pre dieťa vo veku 9–12 rokov.\n\nMôj e-mail: ${email}\n\nĎakujem.`)}`;
+    const mailtoLink = `mailto:mimoriadni@gmail.com?subject=${encodeURIComponent("Predbežná rezervácia - Future Foudners Mini")}&body=${encodeURIComponent(`Dobrý deň,\n\nmám záujem o predbežnú rezerváciu miesta v tábore Future Foudners Mini pre dieťa vo veku 8–14 rokov.\n\nMôj e-mail: ${email}\n\nĎakujem.`)}`;
     window.location.href = mailtoLink;
     setSubmitted(true);
     setTimeout(() => {
