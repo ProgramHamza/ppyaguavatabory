@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ExternalLink, MapPin, SendHorizonal, Sparkles, X } from "lucide-react";
 import BrandMark from "./BrandMark";
+import { contactEmail } from "@/lib/env";
 
 type MessageAuthor = "bot" | "user";
 
@@ -27,9 +28,9 @@ interface Intent {
 
 const quickPrompts = [
   "Je tábor vhodný pre 8-ročné dieťa?",
-  "Ako fungujú StartCoiny?",
-  "Čo dieťa vytvorí za 5 dní?",
-  "Ako rezervujem miesto?",
+  "Čo deti na tábore zažijú?",
+  "Kto tábor podporuje?",
+  "Ako prihlásim dieťa?",
 ];
 
 const intents: Intent[] = [
@@ -37,64 +38,64 @@ const intents: Intent[] = [
     id: "beginners",
     keywords: ["zaciatocnik", "zaciatocnici", "prvykrat", "vhodny", "skusenosti", "neviem"],
     answer:
-      "Áno. Future Foudners Mini je navrhnutý aj pre deti bez predchádzajúcich skúseností. Program je vedený krok za krokom pre vek 8–14 rokov.",
+      "Áno. Future Founders Mini pripravujeme aj pre deti bez predchádzajúcich skúseností. Dôležitá je zvedavosť, chuť skúšať nové veci a vek približne 8–14 rokov.",
     actions: [{ label: "Pozrieť program", href: "#program" }],
   },
   {
     id: "program-output",
-    keywords: ["den", "harmonogram", "program", "co", "vystup", "vytvori", "produkty"],
+    keywords: ["den", "harmonogram", "program", "co", "zazije", "vytvori", "deti"],
     answer:
-      "Za 5 dní deti vytvoria značku, produktový katalóg, promo video, finančný výkaz a finálny pitch. Každý deň končí merateľným výstupom.",
-    actions: [{ label: "Program na 5 dní", href: "#program" }],
+      "Program chceme postaviť na tvorbe, tímovej práci, prezentácii nápadu a kontakte s ľuďmi z praxe. Nejde o prehnane detailný podnikateľský simulátor, ale o poctivo vedený detský tábor.",
+    actions: [{ label: "Program", href: "#program" }],
   },
   {
-    id: "startcoin",
-    keywords: ["startcoin", "sc", "ekonomika", "body", "peniaze", "sankcie", "bonusy"],
+    id: "supporters",
+    keywords: ["partneri", "sponzori", "supporteri", "podporovatelia", "mentori", "mentor"],
     answer:
-      "Každý tím štartuje s 500 SC. Počas týždňa platí materiál, získava bonusy alebo pokuty a finálne poradie vzniká zo zostatku SC a hodnotenia poroty.",
-    actions: [{ label: "Herná ekonomika", href: "#ekonomika" }],
+      "Podporovatelia sú pre nás dôležití aj preto, že niektorí z nich môžu priamo mentorovať deti alebo nám pomáhajú mentorov do programu sprostredkovať.",
+    actions: [{ label: "Partneri", href: "#partneri" }],
   },
   {
     id: "price",
     keywords: ["cena", "stoji", "kolko", "eur", "platba"],
     answer:
-      "Kapacita je obmedzená na 30 detí a miesta sa rýchlo vypredávajú. Vyplňte rezerváciu a pošleme vám aktuálne organizačné detaily.",
-    actions: [{ label: "Odoslať rezerváciu", href: "#kontakt" }],
+      "Ak máte záujem o tábor, najistejšia cesta je vyplniť prihlášku. Následne sa vám ozveme s ďalšími detailmi o termínoch a organizácii.",
+    actions: [{ label: "Prihláška", href: "/prihlaska" }],
   },
   {
-    id: "awards",
-    keywords: ["ocenenie", "vyhra", "vyherca", "trofej", "tim", "leader"],
+    id: "about",
+    keywords: ["tim", "organizatori", "o nas", "kto", "ludia"],
     answer:
-      "Každý tím získava ocenenie. Hodnotí sa biznis výsledok, marketing, produkt, zisk, líder tímu aj kreativita.",
-    actions: [{ label: "Pozrieť ocenenia", href: "#ocenenia" }],
+      "Na stránke nájdete aj sekciu O nás, kde chceme jasne ukázať, kto za táborom stojí a s akou motiváciou ho pripravuje.",
+    actions: [{ label: "O nás", href: "#o-nas" }],
   },
   {
     id: "location",
     keywords: ["kde", "adresa", "lokalita", "zello", "zellova", "bratislava", "mapa"],
     answer:
-      "Tábor prebieha v Bratislave počas leta 2026. Po rezervácii vám pošleme kompletné organizačné informácie.",
+      "Tábor pripravujeme v Bratislave na leto 2026. Konkrétne organizačné informácie budeme posielať prihláseným rodičom.",
     actions: [
-      { label: "Rezervačný formulár", href: "#kontakt" },
+      { label: "Prihláška", href: "/prihlaska" },
     ],
   },
   {
     id: "reservation",
     keywords: ["rezervacia", "prihlaska", "prihlasit", "miesto", "termin", "kontaktujte"],
     answer:
-      "Rezerváciu spravíte cez tlačidlo Rezervovať miesto alebo formulár v sekcii Kontakt. Ozveme sa vám s ďalšími krokmi.",
+      "Prihlásenie dieťaťa prebieha cez samostatnú stránku prihlášky. Kontaktný formulár na hlavnej stránke je určený len na otázky.",
     actions: [
-      { label: "Prejsť na rezerváciu", href: "#kontakt" },
-      { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
+      { label: "Otvoriť prihlášku", href: "/prihlaska" },
+      { label: "Napísať email", href: `mailto:${contactEmail}` },
     ],
   },
   {
     id: "contact",
     keywords: ["email", "telefon", "kontakt", "ozvat", "napisat"],
     answer:
-      "Môžete nám napísať na mimoriadni@gmail.com alebo vyplniť kontaktný formulár priamo na stránke. Odpovedáme čo najskôr.",
+      `Môžete nám napísať na ${contactEmail} alebo vyplniť kontaktný formulár priamo na stránke. Odpovedáme čo najskôr.`,
     actions: [
       { label: "Kontaktný formulár", href: "#kontakt" },
-      { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
+      { label: "Napísať email", href: `mailto:${contactEmail}` },
     ],
   },
 ];
@@ -103,11 +104,12 @@ const defaultReply: Message = {
   id: 0,
   from: "bot",
   text:
-    "Tomuto som úplne presne nerozumel, ale viem pomôcť s programom, StartCoin ekonomickou hrou, oceneniami alebo rezerváciou.",
-  actions: [
-    { label: "Pozrieť program", href: "#program" },
-    { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
-  ],
+    "Tomuto som úplne presne nerozumel, ale viem pomôcť s programom, partnermi, tímom alebo prihláškou.",
+    actions: [
+      { label: "Pozrieť program", href: "#program" },
+      { label: "Prihláška", href: "/prihlaska" },
+      { label: "Napísať email", href: `mailto:${contactEmail}` },
+    ],
 };
 
 const initialMessages: Message[] = [
@@ -115,10 +117,10 @@ const initialMessages: Message[] = [
     id: 1,
     from: "bot",
     text:
-      "Dobrý deň. Som asistent Future Foudners Mini a odpoviem na otázky o programe, StartCoin ekonomike, oceneniach a rezervácii.",
+      "Dobrý deň. Som asistent Future Founders Mini a odpoviem na otázky o programe, partneroch, tíme alebo prihláške.",
     actions: [
-      { label: "Čo bude dieťa robiť?", prompt: "Čo dieťa vytvorí za 5 dní?" },
-      { label: "Ako fungujú StartCoiny?", prompt: "Ako fungujú StartCoiny?" },
+      { label: "Čo deti zažijú?", prompt: "Čo deti na tábore zažijú?" },
+      { label: "Kto tábor podporuje?", prompt: "Kto tábor podporuje?" },
     ],
   },
 ];
@@ -254,7 +256,7 @@ const ChatbotWidget = () => {
               <div>
                 <div className="flex items-center gap-2 text-sm font-medium text-white/90">
                   <BrandMark className="h-5 w-5" letterClassName="text-sm" />
-                  Future Foudners Mini asistent
+                  Future Founders Mini asistent
                 </div>
                 <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/35">
                   <Sparkles className="h-3 w-3" />

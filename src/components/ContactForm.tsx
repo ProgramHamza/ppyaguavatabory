@@ -1,23 +1,22 @@
 import { FormEvent, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { contactEmail } from "@/lib/env";
 import SectionTypingBackdrop from "./SectionTypingBackdrop";
 
 const contactTypingItems = [
   { text: "Kontakt", className: "left-[6%] top-[18%]", opacity: 0.08, duration: 7.1, delay: 0.1 },
-  { text: "Rezervácia", className: "right-[4%] top-[44%]", opacity: 0.07, duration: 8, delay: 0.8 },
-  { text: "Miesto včas", className: "left-[16%] bottom-[8%]", opacity: 0.06, duration: 7.7, delay: 1.4 },
+  { text: "Otázky", className: "right-[4%] top-[44%]", opacity: 0.07, duration: 8, delay: 0.8 },
+  { text: "Napíšte nám", className: "left-[16%] bottom-[8%]", opacity: 0.06, duration: 7.7, delay: 1.4 },
 ];
 
 const ContactForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    parentName: "",
+    name: "",
     email: "",
-    phone: "",
-    childName: "",
-    childAge: "",
     message: "",
   });
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -29,33 +28,23 @@ const ContactForm = () => {
   });
   const headingY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [30, -30]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!formData.parentName || !formData.email || !formData.phone || !formData.childName || !formData.childAge) {
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
       return;
     }
 
     const mailtoLink =
-      `mailto:mimoriadni@gmail.com?subject=${encodeURIComponent("Rezervácia - Future Foudners Mini")}` +
-      `&body=${encodeURIComponent(
-        `Meno rodiča: ${formData.parentName}\n` +
-          `Email: ${formData.email}\n` +
-          `Telefón: ${formData.phone}\n` +
-          `Meno dieťaťa: ${formData.childName}\n` +
-          `Vek dieťaťa: ${formData.childAge}\n` +
-          `Správa: ${formData.message || "Nepovinné pole nevyplnené"}\n`,
-      )}`;
+      `mailto:${contactEmail}?subject=${encodeURIComponent("Otázka - Future Founders Mini")}` +
+      `&body=${encodeURIComponent(`Meno: ${formData.name}\nEmail: ${formData.email}\n\nSpráva:\n${formData.message}\n`)}`;
 
-    window.location.href = mailtoLink;
+    window.open(mailtoLink, "_self");
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setFormData({
-        parentName: "",
+        name: "",
         email: "",
-        phone: "",
-        childName: "",
-        childAge: "",
         message: "",
       });
     }, 3000);
@@ -74,9 +63,15 @@ const ContactForm = () => {
         >
           <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary/70">Kontakt</p>
           <motion.h2 ref={headingRef} style={{ y: headingY }} className="mt-3 text-3xl font-semibold text-foreground sm:text-4xl">
-            Zabezpečte miesto včas.
+            Napíšte nám, ak sa chcete opýtať viac.
           </motion.h2>
-          <p className="mt-2 text-base text-foreground/75">Kapacita je obmedzená na 30 detí. Tábor sa vypredáva rýchlo.</p>
+          <p className="mt-2 text-base text-foreground/75">
+            Tento formulár je na otázky. Ak chcete dieťa prihlásiť, použite samostatnú{" "}
+            <Link to="/prihlaska" className="font-semibold text-primary underline-offset-4 hover:underline">
+              stránku prihlášky
+            </Link>
+            .
+          </p>
 
           {submitted ? (
             <motion.div
@@ -88,32 +83,32 @@ const ContactForm = () => {
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/20">
                 <Check className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground">Rezervácia odoslaná</h3>
-              <p className="mt-1 text-sm text-foreground/65">Ďakujeme, čoskoro sa vám ozveme s detailmi.</p>
+              <h3 className="mt-4 text-lg font-semibold text-foreground">Správa je pripravená</h3>
+              <p className="mt-1 text-sm text-foreground/65">Otvorili sme váš e-mailový klient. Ozvite sa nám a radi odpovieme.</p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="parent-name" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
-                    Meno rodiča
+                  <label htmlFor="contact-name" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
+                    Meno
                   </label>
                   <input
-                    id="parent-name"
+                    id="contact-name"
                     type="text"
                     required
-                    value={formData.parentName}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, parentName: e.target.value }))}
+                    value={formData.name}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                     placeholder="Jana Nováková"
                     className="glass-input w-full rounded-xl px-4 py-3 text-sm"
                   />
                 </div>
                 <div>
-                  <label htmlFor="parent-email" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
+                  <label htmlFor="contact-email" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
                     Email
                   </label>
                   <input
-                    id="parent-email"
+                    id="contact-email"
                     type="email"
                     required
                     value={formData.email}
@@ -122,63 +117,19 @@ const ContactForm = () => {
                     className="glass-input w-full rounded-xl px-4 py-3 text-sm"
                   />
                 </div>
-                <div>
-                  <label htmlFor="parent-phone" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
-                    Telefón
-                  </label>
-                  <input
-                    id="parent-phone"
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+421 900 000 000"
-                    className="glass-input w-full rounded-xl px-4 py-3 text-sm"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="child-name" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
-                    Meno dieťaťa
-                  </label>
-                  <input
-                    id="child-name"
-                    type="text"
-                    required
-                    value={formData.childName}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, childName: e.target.value }))}
-                    placeholder="Adam Novák"
-                    className="glass-input w-full rounded-xl px-4 py-3 text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="child-age" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
-                  Vek dieťaťa (8–14)
-                </label>
-                <input
-                  id="child-age"
-                  type="number"
-                  required
-                  min={8}
-                  max={14}
-                  value={formData.childAge}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, childAge: e.target.value }))}
-                  placeholder="10"
-                  className="glass-input w-full rounded-xl px-4 py-3 text-sm"
-                />
               </div>
 
               <div>
                 <label htmlFor="contact-message" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/55">
-                  Správa (nepovinné)
+                  Správa
                 </label>
                 <textarea
                   id="contact-message"
                   rows={4}
+                  required
                   value={formData.message}
                   onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-                  placeholder="Môžete doplniť otázku alebo špeciálnu poznámku."
+                  placeholder="Napíšte nám, čo vás zaujíma."
                   className="glass-input w-full resize-none rounded-xl px-4 py-3 text-sm"
                 />
               </div>
@@ -187,7 +138,7 @@ const ContactForm = () => {
                 type="submit"
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
               >
-                Odoslať rezerváciu
+                Poslať správu
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>

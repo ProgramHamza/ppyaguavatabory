@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import ReservationModal from "./ReservationModal";
+import { Link } from "react-router-dom";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { showImages } from "@/lib/env";
 import heroAcademy from "@/assets/hero-academy.jpg";
@@ -9,22 +9,22 @@ import pitchDay from "@/assets/pitch-day.jpg";
 import campWorkshop from "@/assets/IMG_6207.JPG";
 
 const stats = [
-  { value: "5 dní", label: "intenzívny program" },
-  { value: "8–14", label: "rokov, ideálny vek" },
-  { value: "max. 30", label: "detí na turnus" },
+  { value: "8–14", label: "rokov, cieľový vek" },
+  { value: "BA", label: "denný tábor v Bratislave" },
+  { value: "pilot", label: "prvý ročník programu" },
 ];
 
 const trustBadges = [
   "Leto 2026 · Bratislava",
   "Pre deti 8–14 rokov",
-  "Pilotný ročník programu",
-  "Vlastný produkt za 5 dní",
+  "Podpora mentorov a partnerov",
+  "Denný tábor s praktickým programom",
 ];
 
 const heroGallery = [
   { src: heroAcademy, alt: "Deti počas programu v tíme", label: "Tímová práca" },
-  { src: pitchDay, alt: "Pitch prezentácia pred porotou", label: "Pitch day" },
-  { src: campWorkshop, alt: "Workshop a tvorba produktu", label: "Workshop" },
+  { src: pitchDay, alt: "Prezentácia detského nápadu", label: "Prezentácia" },
+  { src: campWorkshop, alt: "Workshop a spoločná tvorba", label: "Workshop" },
 ];
 
 const headlineLines = [
@@ -35,17 +35,16 @@ const headlineLines = [
     { word: "dcéra.", accent: false },
   ],
   [
-    { word: "Vlastná", accent: true },
-    { word: "firma", accent: true },
-    { word: "za", accent: true },
-    { word: "5", accent: true },
-    { word: "dní.", accent: true },
+    { word: "Skúsi", accent: true },
+    { word: "nápad", accent: true },
+    { word: "v", accent: true },
+    { word: "praxi.", accent: true },
   ],
 ];
 
 const ghostTexts = [
   {
-    text: "Vlastná firma",
+    text: "Vlastný nápad",
     className: "left-[-2vw] top-[10vh]",
     opacity: 0.1,
     xRange: [-14, 10],
@@ -55,7 +54,7 @@ const ghostTexts = [
     delay: 0,
   },
   {
-    text: "Budúci CEO",
+    text: "Tímová práca",
     className: "right-[-3vw] top-[32vh]",
     opacity: 0.08,
     xRange: [14, -8],
@@ -65,7 +64,7 @@ const ghostTexts = [
     delay: 0.9,
   },
   {
-    text: "Predaj. Nápad. Výhra.",
+    text: "Mentori. Tvorba. Skúsenosť.",
     className: "left-[10vw] bottom-[8vh]",
     opacity: 0.06,
     xRange: [-8, 12],
@@ -265,7 +264,6 @@ const Balloon = ({ className, fill }: { className: string; fill: string }) => {
 };
 
 const HeroSection = () => {
-  const [showReservation, setShowReservation] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -420,7 +418,7 @@ const HeroSection = () => {
           transition={{ duration: prefersReducedMotion ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
-          <p className="text-xs font-medium uppercase tracking-[0.32em] text-primary/70">Future Foudners Mini · Letný denný tábor</p>
+          <p className="text-xs font-medium uppercase tracking-[0.32em] text-primary/70">Future Founders Mini · Letný denný tábor</p>
 
           <h1 className="mt-8 text-[clamp(2.7rem,6vw,5.2rem)] font-bold leading-[0.98] tracking-tight text-foreground">
             {headlineLines.map((line, lineIndex) => (
@@ -455,8 +453,8 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: prefersReducedMotion ? 0 : 0.45, duration: prefersReducedMotion ? 0 : 0.7 }}
           >
-            Letný denný tábor v Bratislave, kde deti 8–14 rokov postavia reálny biznis - od nápadu až po prvý predaj.
-            Žiadna teória. Merateľné výsledky.
+            Letný denný tábor v Bratislave, kde si deti vo veku 8–14 rokov vyskúšajú tvorbu, tímovú prácu, prezentáciu vlastného
+            nápadu a kontakt s ľuďmi z praxe. Menej prázdnych sľubov, viac poctivo vedeného zážitku.
           </motion.p>
 
           <motion.div
@@ -465,13 +463,13 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: prefersReducedMotion ? 0 : 0.55, duration: prefersReducedMotion ? 0 : 0.7 }}
           >
-            <button
-              onClick={() => setShowReservation(true)}
+            <Link
+              to="/prihlaska"
               className="relative flex items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
             >
-              Rezervovať miesto
+              Prihlásiť dieťa
               <ArrowRight className="h-4 w-4" />
-            </button>
+            </Link>
             <a
               href="#program"
               className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-7 py-3.5 text-sm font-medium text-foreground/80 backdrop-blur-sm transition hover:bg-primary/15 hover:text-foreground"
@@ -555,8 +553,6 @@ const HeroSection = () => {
           ))}
         </motion.div>
       </motion.div>
-
-      <ReservationModal open={showReservation} onClose={() => setShowReservation(false)} />
     </section>
   );
 };

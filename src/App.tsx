@@ -9,6 +9,7 @@ import ProgressBar from "@/components/ProgressBar";
 import ChatbotWidget from "@/components/ChatbotWidget";
 import ThemeProvider from "@/components/ThemeProvider";
 import FloatingProjectBadge from "@/components/FloatingProjectBadge";
+import Registration from "./pages/Registration";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,7 @@ const App = () => (
           <ProgressBar />
           <Routes>
             <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/prihlaska" element={<Registration />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <ChatbotWidget />

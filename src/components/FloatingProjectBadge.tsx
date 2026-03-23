@@ -30,7 +30,7 @@ const FloatingProjectBadge = () => {
     <div className="fixed left-3 top-3 z-[90]">
       <div className="flex items-center gap-2 rounded-2xl border border-primary/20 bg-background/85 px-3 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.22)] backdrop-blur-xl">
         <GeneratedFFIcon className="h-6 w-6" />
-        <span className="text-xs font-semibold text-foreground/88">Future Foudners Mini</span>
+        <span className="text-xs font-semibold text-foreground/88">Future Founders Mini</span>
         <button
           type="button"
           onClick={handleClose}

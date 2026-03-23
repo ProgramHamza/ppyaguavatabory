@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Menu, Moon, SunMedium, X } from "lucide-react";
 import { useTheme } from "next-themes";
-import ReservationModal from "./ReservationModal";
+import { Link } from "react-router-dom";
 import BrandMark from "./BrandMark";
 
 const links = [
   { href: "#program", label: "Program" },
-  { href: "#ekonomika", label: "Ekonomika" },
-  { href: "#ocenenia", label: "Ocenenia" },
+  { href: "#partneri", label: "Partneri" },
+  { href: "#o-nas", label: "O nás" },
   { href: "#kontakt", label: "Kontakt" },
 ];
 
@@ -40,85 +40,78 @@ const ThemeToggle = () => {
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const [showReservation, setShowReservation] = useState(false);
 
   return (
-    <>
-      <header className="fixed inset-x-0 top-0 z-50">
-        <nav className="border-b border-border/80 bg-background/80 backdrop-blur-xl">
-          <div className="container flex h-16 items-center justify-between">
-            <a href="/" className="flex items-center gap-3 text-lg tracking-tight text-foreground">
-              <BrandMark className="h-9 w-9" letterClassName="text-xl" />
-              <span className="leading-none">
-                <span className="block font-medium">Future</span>
-                <span className="block font-bold">Foudners Mini</span>
-              </span>
-            </a>
+    <header className="fixed inset-x-0 top-0 z-50">
+      <nav className="border-b border-border/80 bg-background/80 backdrop-blur-xl">
+        <div className="container flex h-16 items-center justify-between">
+          <a href="/" className="flex items-center gap-3 text-lg tracking-tight text-foreground">
+            <BrandMark className="h-9 w-9" letterClassName="text-xl" />
+            <span className="leading-none">
+              <span className="block font-medium">Future</span>
+              <span className="block font-bold">Founders Mini</span>
+            </span>
+          </a>
 
-            <div className="hidden items-center gap-8 text-sm lg:flex">
+          <div className="hidden items-center gap-8 text-sm lg:flex">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-foreground/60 transition-colors duration-200 hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="hidden items-center gap-3 lg:flex">
+            <ThemeToggle />
+            <Link
+              to="/prihlaska"
+              className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+            >
+              Prihlásiť dieťa
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2 lg:hidden">
+            <ThemeToggle />
+            <button
+              onClick={() => setOpen((prev) => !prev)}
+              className="rounded-lg p-2 text-foreground/80 transition hover:bg-primary/10"
+              aria-label="Prepnúť navigáciu"
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="border-t border-border/80 bg-background/95 backdrop-blur-xl lg:hidden">
+            <div className="container space-y-3 py-6">
               {links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-foreground/60 transition-colors duration-200 hover:text-foreground"
+                  className="block text-sm text-foreground/70 transition hover:text-foreground"
+                  onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </a>
               ))}
-            </div>
-
-            <div className="hidden items-center gap-3 lg:flex">
-              <ThemeToggle />
-              <button
-                onClick={() => setShowReservation(true)}
-                className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+              <Link
+                to="/prihlaska"
+                onClick={() => setOpen(false)}
+                className="block w-full rounded-xl bg-primary px-5 py-2.5 text-center text-sm font-semibold text-primary-foreground"
               >
-                Rezervovať miesto
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2 lg:hidden">
-              <ThemeToggle />
-              <button
-                onClick={() => setOpen((prev) => !prev)}
-                className="rounded-lg p-2 text-foreground/80 transition hover:bg-primary/10"
-                aria-label="Prepnúť navigáciu"
-              >
-                {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
+                Prihlásiť dieťa
+              </Link>
             </div>
           </div>
-
-          {open && (
-            <div className="border-t border-border/80 bg-background/95 backdrop-blur-xl lg:hidden">
-              <div className="container space-y-3 py-6">
-                {links.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="block text-sm text-foreground/70 transition hover:text-foreground"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    setShowReservation(true);
-                  }}
-                  className="w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-                >
-                  Rezervovať miesto
-                </button>
-              </div>
-            </div>
-          )}
-        </nav>
-      </header>
-
-      <ReservationModal open={showReservation} onClose={() => setShowReservation(false)} />
-    </>
+        )}
+      </nav>
+    </header>
   );
 };
 

@@ -2,52 +2,33 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
-const programDays = [
+const programMoments = [
   {
-    day: 1,
-    title: "Deň 1 — Vznik firmy",
-    topic: "Začíname podnik",
+    label: "Blok 1",
+    title: "Nápad, tím a prvé rozhodnutia",
+    topic: "Ako sa z nápadu stane spoločná práca",
     description:
-      "Deti si rozdelia roly (CEO, Marketing, Financie, Produkt), vytvoria názov, logo a brand board. Naštartujú hernú ekonomiku — každý tím dostáva 500 StartCoinov.",
-    event: "Príchod konkurencie — tímy musia do 20 minút upraviť stratégiu.",
-    output: "Brand board + biznis plán (1 strana) + cenník",
+      "Deti budú premýšľať nad tým, čo chcú vytvoriť, ako sa dohodnúť v tíme a ako predstaviť vlastný nápad jednoducho a zrozumiteľne.",
+    highlight: "Dôraz bude na spoluprácu, komunikáciu a odvahu skúsiť niečo vlastné.",
+    output: "Tímový koncept a prvá prezentácia",
   },
   {
-    day: 2,
-    title: "Deň 2 — Produkt & výroba",
-    topic: "Čo vlastne predávame?",
+    label: "Blok 2",
+    title: "Tvorba a skúšanie v praxi",
+    topic: "Z nápadu k niečomu, čo má tvar",
     description:
-      "Prototypovanie, kalkulácia nákladov (materiál + čas = cena výroby), krížové testovanie medzi tímami.",
-    event: "Zákazníci vrátili tovar — tímy musia upraviť aspoň 1 produkt na základe spätnej väzby.",
-    output: "Finálny produktový katalóg + kalkulácia nákladov",
+      "Program chceme stavať na skúšaní, spätnej väzbe a malých praktických úlohách. Deti si vyskúšajú tvorbu, premýšľanie o hodnote a jednoduché predstavenie svojho výsledku.",
+    highlight: "Nepôjde o teóriu pre teóriu, ale o vedenú prax primeranú veku.",
+    output: "Rozpracovaný výstup a spätná väzba",
   },
   {
-    day: 3,
-    title: "Deň 3 — Marketing & značka",
-    topic: "Ako sa o nás dozvedia ľudia?",
+    label: "Blok 3",
+    title: "Prezentácia a stretnutie s praxou",
+    topic: "Deti uvidia, že ich nápad sa dá odkomunikovať",
     description:
-      "Fyzický plagát A2, 60-sekundové promo video, AI vizuály v Canva, pitch pred ostatnými tímami.",
-    event: "Influencer reakcia — 2 tímy dostanú +30% dopyt, ostatní musia reagovať.",
-    output: "Plagát + promo video + sada 3 grafík",
-  },
-  {
-    day: 4,
-    title: "Deň 4 — Predaj na trhu",
-    topic: "Zarábame",
-    description:
-      "Mini trh (2 hodiny) — deti nakupujú a predávajú v hernej mene. Záverečný blok: predaj rodičom.",
-    event:
-      "Inflačná kríza — zdraženie materiálu o 50%, postihnutý tím musí improvizovať nový produkt do 15 minút.",
-    output: "Finančný výkaz: príjmy, náklady, zisk/strata",
-  },
-  {
-    day: 5,
-    title: "Deň 5 — Finále & investori",
-    topic: "Veľké finále",
-    description:
-      "Pitch pred porotou (rodičia, hostia, mentor). Tajné hlasovanie. Odovzdávanie ocenení.",
-    event: "Investorská otázka — CEO každého tímu odpovie na náhodnú otázku od investora.",
-    output: "Záverečná prezentácia + osobný reflexný záznam",
+      "Súčasťou tábora majú byť aj ľudia z praxe a mentori, ktorí môžu deťom ukázať, ako sa o nápadoch premýšľa v reálnom svete bez zbytočného tlaku.",
+    highlight: "Práve preto sú pre nás podporovatelia a mentori takí dôležití.",
+    output: "Záverečné zdieľanie a skúsenosť z prezentácie",
   },
 ];
 
@@ -80,11 +61,11 @@ const ProgramSection = () => {
         <div className="mb-14 max-w-3xl">
           <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary/70">Program</p>
           <motion.h2 ref={headingRef} style={{ y: headingY }} className="mt-3 text-4xl font-semibold text-foreground sm:text-5xl">
-            Čo bude vaše dieťa robiť každý deň?
+            Čo chceme deťom počas tábora priniesť?
           </motion.h2>
           <p className="mt-4 text-lg text-foreground/75">
-            Každý deň má jasnú tému, krízovú event výzvu a merateľný výstup. Rodič vidí konkrétny progres, dieťa
-            zažíva skutočné rozhodovanie.
+            Na webe nechceme predstierať, že máme dopredu rozpísaný každý detail. Jadro je však jasné: tvorba, tímová práca,
+            vedený program a kontakt s ľuďmi z praxe.
           </p>
         </div>
 
@@ -96,17 +77,11 @@ const ProgramSection = () => {
             preserveAspectRatio="none"
           >
             <path d="M24 2 V98" stroke="rgba(245, 166, 35, 0.22)" strokeLinecap="round" strokeWidth="2" />
-            <motion.path
-              d="M24 2 V98"
-              stroke="#F5A623"
-              strokeLinecap="round"
-              strokeWidth="4"
-              style={{ pathLength: lineProgress }}
-            />
+            <motion.path d="M24 2 V98" stroke="#F5A623" strokeLinecap="round" strokeWidth="4" style={{ pathLength: lineProgress }} />
           </svg>
 
           <div className="space-y-5 md:pl-10">
-            {programDays.map((item, index) => (
+            {programMoments.map((item, index) => (
               <motion.article
                 key={item.title}
                 initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -32 }}
@@ -138,17 +113,17 @@ const ProgramSection = () => {
 
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-foreground">
-                    Deň {item.day}
+                    {item.label}
                   </span>
                   <h3 className="text-2xl font-semibold text-foreground">{item.title}</h3>
                 </div>
 
-                <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] text-primary/80">Téma: "{item.topic}"</p>
+                <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] text-primary/80">{item.topic}</p>
                 <p className="mt-3 text-base leading-relaxed text-foreground/80">{item.description}</p>
 
                 <div className="mt-4 rounded-xl border border-primary/20 border-l-4 border-l-primary bg-primary/10 px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary">Event</p>
-                  <p className="mt-1 text-sm leading-relaxed text-foreground/80">{item.event}</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary">Dôraz</p>
+                  <p className="mt-1 text-sm leading-relaxed text-foreground/80">{item.highlight}</p>
                 </div>
 
                 <div className="mt-5 inline-flex items-center rounded-full border border-primary/30 bg-primary/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">

@@ -9,64 +9,24 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { showImages } from "@/lib/env";
 import SectionTypingBackdrop from "./SectionTypingBackdrop";
-import awardsMomentA from "@/assets/DSC01757.jpg";
-import awardsMomentB from "@/assets/IMG_6383.JPG";
+import { teamMembers } from "@/content/siteContent";
 
-const awards = [
-  {
-    icon: "🏆",
-    title: "Najlepší biznis",
-    desc: "Najvyššie finálne skóre.",
-  },
-  {
-    icon: "📣",
-    title: "Najlepší marketing",
-    desc: "Najsilnejšia značka a prezentácia.",
-  },
-  {
-    icon: "🛠",
-    title: "Najlepší produkt",
-    desc: "Originalita, kvalita, feedback zákazníkov.",
-  },
-  {
-    icon: "💰",
-    title: "Najlepší zisk",
-    desc: "Najvyšší SC zostatok po trhu.",
-  },
-  {
-    icon: "👑",
-    title: "Najlepší líder",
-    desc: "Individuálne ocenenie pre CEO tímu.",
-  },
-  {
-    icon: "✨",
-    title: "Najkreatívnejší nápad",
-    desc: "Garancie pre každý tím, nikto neodchádza bez titulu.",
-  },
-];
-
-const awardsTypingItems = [
-  { text: "Ocenenia", className: "left-[6%] top-[14%]", opacity: 0.08, duration: 7.4, delay: 0.2 },
-  { text: "Výhra", className: "right-[8%] top-[46%]", opacity: 0.07, duration: 6.9, delay: 0.9 },
-  { text: "Kreativita", className: "left-[16%] bottom-[8%]", opacity: 0.06, duration: 8.2, delay: 1.3 },
-];
-
-const awardsGallery = [
-  { src: awardsMomentA, alt: "Deti s oceneniami počas finále", label: "Ocenenia" },
-  { src: awardsMomentB, alt: "Tímové oslavy po prezentácii", label: "Finále" },
+const aboutTypingItems = [
+  { text: "O nás", className: "left-[6%] top-[14%]", opacity: 0.08, duration: 7.4, delay: 0.2 },
+  { text: "Tím", className: "right-[8%] top-[46%]", opacity: 0.07, duration: 6.9, delay: 0.9 },
+  { text: "Ľudia za táborom", className: "left-[16%] bottom-[8%]", opacity: 0.06, duration: 8.2, delay: 1.3 },
 ];
 
 const springConfig = { stiffness: 220, damping: 20, mass: 0.8 };
 
-type AwardTiltCardProps = {
-  award: (typeof awards)[number];
+type MemberCardProps = {
+  member: (typeof teamMembers)[number];
   index: number;
   prefersReducedMotion: boolean;
 };
 
-const AwardTiltCard = ({ award, index, prefersReducedMotion }: AwardTiltCardProps) => {
+const MemberCard = ({ member, index, prefersReducedMotion }: MemberCardProps) => {
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const shimmerX = useMotionValue(50);
@@ -120,7 +80,7 @@ const AwardTiltCard = ({ award, index, prefersReducedMotion }: AwardTiltCardProp
 
   return (
     <motion.article
-      key={award.title}
+      key={member.id}
       initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.92 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -141,7 +101,7 @@ const AwardTiltCard = ({ award, index, prefersReducedMotion }: AwardTiltCardProp
       onHoverStart={() => !prefersReducedMotion && setIsHovering(true)}
       onHoverEnd={resetTilt}
       style={interactiveStyle}
-      className="glass-panel-soft group relative overflow-hidden rounded-[2rem] p-6 transition-all duration-300"
+      className="glass-panel-soft group relative overflow-hidden rounded-[2rem] transition-all duration-300"
     >
       <motion.div
         aria-hidden="true"
@@ -153,16 +113,20 @@ const AwardTiltCard = ({ award, index, prefersReducedMotion }: AwardTiltCardProp
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.28),transparent_42%,rgba(245,166,35,0.12))] opacity-70"
       />
 
-      <div className="relative z-10" style={{ transform: "translateZ(18px)" }}>
-        <div className="text-3xl">{award.icon}</div>
-        <h3 className="mt-4 text-2xl font-semibold text-foreground">{award.title}</h3>
-        <p className="mt-2 text-base leading-relaxed text-foreground/75">{award.desc}</p>
+      <div className="relative z-10 overflow-hidden rounded-t-[2rem]">
+        <img src={member.image} alt={member.name} className="h-56 w-full object-cover" loading="lazy" />
+      </div>
+
+      <div className="relative z-10 p-6" style={{ transform: "translateZ(18px)" }}>
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{member.role}</p>
+        <h3 className="mt-3 text-2xl font-semibold text-foreground">{member.name}</h3>
+        <p className="mt-3 text-base leading-relaxed text-foreground/75">{member.bio}</p>
       </div>
     </motion.article>
   );
 };
 
-const OceneniaSection = () => {
+const AboutSection = () => {
   const prefersReducedMotion = usePrefersReducedMotion();
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -173,8 +137,8 @@ const OceneniaSection = () => {
   const headingY = useTransform(headingProgress, [0, 1], prefersReducedMotion ? [0, 0] : [30, -30]);
 
   return (
-    <section className="relative z-10 py-24 lg:py-32" id="ocenenia">
-      <SectionTypingBackdrop items={awardsTypingItems} />
+    <section className="relative z-10 py-24 lg:py-32" id="o-nas">
+      <SectionTypingBackdrop items={aboutTypingItems} />
       <motion.div
         className="container"
         initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 48 }}
@@ -183,37 +147,19 @@ const OceneniaSection = () => {
         transition={{ duration: prefersReducedMotion ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="mb-12 max-w-3xl">
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary/70">Ocenenia</p>
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary/70">O nás</p>
           <motion.h2 ref={headingRef} style={{ y: headingY }} className="mt-3 text-4xl font-semibold text-foreground sm:text-5xl">
-            Každý tím vyhráva niečo.
+            Ľudia, ktorí chcú tento tábor postaviť poctivo.
           </motion.h2>
           <p className="mt-4 text-lg text-foreground/75">
-            Súťaž je férová, motivujúca a postavená tak, aby každé dieťa odchádzalo s úspechom, nie sklamaním.
+            Namiesto anonymnej značky chceme ukázať, kto za táborom stojí. Tieto profily môžete ďalej upraviť, keď doplníte finálne
+            mená, fotky a bios.
           </p>
         </div>
 
-        {showImages ? (
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
-            className="mb-8 grid gap-3 sm:grid-cols-2"
-          >
-            {awardsGallery.map((item) => (
-              <figure key={item.alt} className="relative overflow-hidden rounded-2xl border border-primary/20">
-                <img src={item.src} alt={item.alt} className="h-40 w-full object-cover md:h-48" loading="lazy" />
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-3 py-2 text-xs font-medium text-white/90">
-                  {item.label}
-                </figcaption>
-              </figure>
-            ))}
-          </motion.div>
-        ) : null}
-
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {awards.map((award, index) => (
-            <AwardTiltCard key={award.title} award={award} index={index} prefersReducedMotion={prefersReducedMotion} />
+          {teamMembers.map((member, index) => (
+            <MemberCard key={member.id} member={member} index={index} prefersReducedMotion={prefersReducedMotion} />
           ))}
         </div>
       </motion.div>
@@ -221,4 +167,4 @@ const OceneniaSection = () => {
   );
 };
 
-export default OceneniaSection;
+export default AboutSection;

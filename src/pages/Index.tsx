@@ -1,8 +1,8 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ProgramSection from "@/components/FeaturesSection";
-import HernaEkonomika from "@/components/SkillTreeSection";
-import OceneniaSection from "@/components/ExperienceGallery";
+import PartnersSection from "@/components/SocialProofSection";
+import AboutSection from "@/components/ExperienceGallery";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import { BackgroundCanvas } from "../components/BackgroundCanvas";
@@ -15,8 +15,8 @@ const Index = () => {
         <Navbar />
         <HeroSection />
         <ProgramSection />
-        <HernaEkonomika />
-        <OceneniaSection />
+        <PartnersSection />
+        <AboutSection />
         <ContactForm />
         <Footer />
       </div>
