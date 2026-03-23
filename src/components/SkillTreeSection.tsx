@@ -1,121 +1,185 @@
-import { motion } from "framer-motion";
-import { Coins, Mic2, Users, Trophy } from "lucide-react";
+import { useRef } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { BadgeDollarSign, Coins, Gavel, Scale } from "lucide-react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import SectionTypingBackdrop from "./SectionTypingBackdrop";
 
-const perks = [
+const economyCards = [
   {
     icon: Coins,
-    label: "Finančné IQ",
-    coins: "+20 mincí",
-    desc: "Rozpočet, cashflow, investičné misie a burzové hry v praxi.",
+    title: "Štartovací kapitál",
+    desc: "Každý tím dostane 500 SC na Deň 1.",
   },
   {
-    icon: Mic2,
-    label: "Prezentačné zručnosti",
-    coins: "+15 mincí",
-    desc: "Storyboarding, rétorika a improvizačné cvičenia pred publikom.",
+    icon: BadgeDollarSign,
+    title: "Materiálové náklady",
+    desc: "Každá surovina má pevnú cenu v SC podľa cenníka.",
   },
   {
-    icon: Users,
-    label: "Tímová spolupráca",
-    coins: "+30 mincí",
-    desc: "Vzájomný feedback, tímové výzvy a rozvoj leadershipu.",
+    icon: Gavel,
+    title: "Sankcie & bonusy",
+    desc: "Nesplnený event = pokuta 50 SC. Správna reakcia = bonus 80 SC.",
   },
   {
-    icon: Trophy,
-    label: "Odvaha & iniciatíva",
-    coins: "+25 mincí",
-    desc: "Športové questy, kooperatívne výzvy a osobný rast.",
+    icon: Scale,
+    title: "Finálne skóre",
+    desc: "SC zostatok × 0.4 + hodnotenie poroty × 0.6 = finálne poradie.",
   },
 ];
 
-const sideRewards = [
-  {
-    title: "Táborové mince",
-    desc: "Každý účastník zbiera virtuálne mince za odvahu, pomoc tímu a výsledky. Motivácia bez tlaku — na konci týždňa sa dajú vymeniť za ceny.",
-  },
-  {
-    title: "Digitálny profil",
-    desc: "Na konci týždňa vaše dieťa získa digitálny profil s hodnotením mentorov a odporúčaním — pamiatka a motivácia do budúcnosti.",
-  },
+const coinDrops = [
+  { left: "4%", delay: 0, drift: -16, duration: 1.7 },
+  { left: "12%", delay: 0.08, drift: 14, duration: 1.9 },
+  { left: "20%", delay: 0.16, drift: -12, duration: 2.05 },
+  { left: "28%", delay: 0.24, drift: 18, duration: 1.85 },
+  { left: "36%", delay: 0.32, drift: -10, duration: 2.2 },
+  { left: "44%", delay: 0.4, drift: 14, duration: 1.95 },
+  { left: "52%", delay: 0.48, drift: -18, duration: 2.1 },
+  { left: "60%", delay: 0.56, drift: 16, duration: 1.75 },
+  { left: "68%", delay: 0.64, drift: -14, duration: 2.15 },
+  { left: "76%", delay: 0.72, drift: 12, duration: 1.9 },
+  { left: "84%", delay: 0.8, drift: -15, duration: 2.05 },
+  { left: "92%", delay: 0.88, drift: 10, duration: 1.8 },
 ];
 
-const SkillTreeSection = () => {
+const economyTypingItems = [
+  { text: "StartCoin", className: "left-[6%] top-[14%]", opacity: 0.08, duration: 7.2, delay: 0.2 },
+  { text: "Herná ekonomika", className: "right-[4%] top-[44%]", opacity: 0.07, duration: 8.1, delay: 0.8 },
+  { text: "Rozpočet", className: "left-[18%] bottom-[6%]", opacity: 0.06, duration: 6.8, delay: 1.1 },
+];
+
+const floatingGameBits = [
+  { id: "bit-1", left: "12%", top: "20%", symbol: "SC", duration: 7.8, delay: 0, opacity: 0.08 },
+  { id: "bit-2", left: "82%", top: "22%", symbol: "▲", duration: 8.6, delay: 0.4, opacity: 0.06 },
+  { id: "bit-3", left: "74%", top: "72%", symbol: "◆", duration: 7.1, delay: 1, opacity: 0.07 },
+  { id: "bit-4", left: "24%", top: "78%", symbol: "●", duration: 8.2, delay: 0.7, opacity: 0.06 },
+];
+
+const StartCoin = () => {
   return (
-    <section className="relative z-10 py-24 lg:py-32" id="skilltree">
-      <div className="container grid gap-8 lg:grid-cols-2">
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Motivácia</p>
-            <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
-              Čo vaše dieťa získa?
-            </h2>
-            <p className="mt-4 text-lg text-white/45">
-              Systém táborových mincí robí z učenia hru: každý deň vaše dieťa odomyká nové zručnosti a vidí svoj pokrok.
-            </p>
-          </motion.div>
+    <svg viewBox="0 0 56 56" className="h-10 w-10 drop-shadow-[0_14px_30px_rgba(245,166,35,0.22)]" fill="none">
+      <circle cx="28" cy="28" r="23" fill="rgba(245,166,35,0.22)" />
+      <circle cx="28" cy="28" r="20" fill="#FFD580" stroke="#F5A623" strokeWidth="2.5" />
+      <circle cx="28" cy="28" r="14.5" fill="rgba(255,255,255,0.34)" stroke="rgba(255,255,255,0.45)" />
+      <text x="28" y="31.5" fill="#8B4B00" fontFamily="inherit" fontSize="12" fontWeight="800" textAnchor="middle">
+        SC
+      </text>
+    </svg>
+  );
+};
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {perks.map((perk, index) => (
-              <motion.div
-                key={perk.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.08, duration: 0.4 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -8, rotateX: 2, rotateY: -2, scale: 1.03, transition: { type: "spring", stiffness: 400, damping: 25 } }}
-                style={{ transformPerspective: 800 }}
-                className="glass-panel-soft group rounded-2xl p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                    <perk.icon className="h-5 w-5 text-white/60" />
-                  </div>
-                  <span className="text-sm font-semibold text-white/50">{perk.coins}</span>
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-white">{perk.label}</h3>
-                <p className="mt-2 text-sm text-white/40">{perk.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+const HernaEkonomika = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const coinsVisible = useInView(sectionRef, { once: false, amount: 0.25 });
+
+  const { scrollYProgress: headingProgress } = useScroll({
+    target: headingRef,
+    offset: ["start end", "end start"],
+  });
+  const headingY = useTransform(headingProgress, [0, 1], prefersReducedMotion ? [0, 0] : [30, -30]);
+
+  return (
+    <section ref={sectionRef} className="relative z-10 overflow-hidden py-24 lg:py-32" id="ekonomika">
+      <SectionTypingBackdrop items={economyTypingItems} />
+
+      {!prefersReducedMotion &&
+        floatingGameBits.map((bit) => (
+          <motion.span
+            key={bit.id}
+            aria-hidden="true"
+            className="pointer-events-none absolute hidden text-sm font-bold text-primary/80 md:block"
+            style={{ left: bit.left, top: bit.top, opacity: bit.opacity, willChange: "transform" }}
+            animate={{ y: [0, -14, 0], rotate: [0, 6, 0], x: [0, 6, 0] }}
+            transition={{ duration: bit.duration, delay: bit.delay, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {bit.symbol}
+          </motion.span>
+        ))}
+
+      {!prefersReducedMotion && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-10 h-40 overflow-hidden">
+          {coinDrops.map((coin, index) => (
+            <motion.div
+              key={`${coin.left}-${index}`}
+              className="absolute top-0"
+              style={{ left: coin.left, willChange: coinsVisible ? "transform, opacity" : undefined }}
+              initial={{ y: -60, opacity: 0, rotate: 0 }}
+              animate={
+                coinsVisible
+                  ? {
+                      y: [-60, 120, -60],
+                      x: [0, coin.drift, 0],
+                      opacity: [0, 1, 0],
+                      rotate: [0, 360, 720],
+                    }
+                  : { y: -60, x: 0, opacity: 0, rotate: 0 }
+              }
+              transition={{
+                delay: coin.delay,
+                duration: coin.duration,
+                ease: [0.22, 1, 0.36, 1],
+                repeat: coinsVisible ? Infinity : 0,
+                repeatDelay: 0.35 + index * 0.03,
+              }}
+            >
+              <StartCoin />
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      <motion.div
+        className="container"
+        initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 48 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="mb-12 max-w-3xl">
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary/70">Herná ekonomika — StartCoiny (SC)</p>
+          <motion.h2 ref={headingRef} style={{ y: headingY }} className="mt-3 text-4xl font-semibold text-foreground sm:text-5xl">
+            Skutočné rozhodnutia. Herné peniaze. Reálne lekcie.
+          </motion.h2>
+          <p className="mt-4 text-lg text-foreground/75">
+            Deti sa učia financie cez prax. Každé rozhodnutie v tíme má okamžitý dopad na rozpočet, výsledok aj poradie.
+          </p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="glass-panel rounded-2xl p-8"
-        >
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Bonusy</p>
-          <h3 className="mt-3 text-2xl font-semibold text-white">Denné výzvy a odmeny.</h3>
-          <p className="mt-3 text-sm text-white/45">
-            Mentori zadávajú špeciálne misie — za splnenie získavajú deti extra táborové mince, ktoré na konci týždňa premenia na reálne ceny.
-          </p>
-
-          <ul className="mt-8 space-y-4">
-            {sideRewards.map((reward) => (
-              <li key={reward.title} className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-4">
-                <h4 className="font-semibold text-white">{reward.title}</h4>
-                <p className="mt-1 text-sm text-white/40">{reward.desc}</p>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-4">
-            <p className="text-xs font-medium uppercase tracking-widest text-white/30">Pre rodičov</p>
-            <p className="mt-2 text-sm text-white/50">
-              Denné reporty vám ukážu, koľko mincí vaše dieťa získalo a za čo. Vždy viete, ako sa mu darí.
-            </p>
-          </div>
-        </motion.div>
-      </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {economyCards.map((item, index) => (
+            <motion.article
+              key={item.title}
+              initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: prefersReducedMotion ? 0 : index * 0.08, duration: prefersReducedMotion ? 0 : 0.45 }}
+              viewport={{ once: true }}
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : {
+                      y: -8,
+                      rotateX: 2,
+                      rotateY: -2,
+                      scale: 1.03,
+                      transition: { type: "spring", stiffness: 400, damping: 25 },
+                    }
+              }
+              style={{ transformPerspective: 800 }}
+              className="glass-panel-soft rounded-[2rem] p-6 transition-all duration-300"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15">
+                <item.icon className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="mt-4 text-2xl font-semibold text-foreground">{item.title}</h3>
+              <p className="mt-2 text-base leading-relaxed text-foreground/75">{item.desc}</p>
+            </motion.article>
+          ))}
+        </div>
+      </motion.div>
     </section>
   );
 };
 
-export default SkillTreeSection;
+export default HernaEkonomika;

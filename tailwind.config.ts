@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Aldrich", "sans-serif"],
-        display: ["Aldrich", "sans-serif"],
-        body: ["Aldrich", "sans-serif"],
+        sans: ["Nunito Sans", "sans-serif"],
+        display: ["Baloo 2", "cursive"],
+        body: ["Nunito Sans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

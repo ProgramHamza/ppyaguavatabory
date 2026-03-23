@@ -1,123 +1,166 @@
-import { motion } from "framer-motion";
-import { Lightbulb, PencilRuler, Megaphone, Gamepad2, Presentation } from "lucide-react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
-const path = [
+const programDays = [
   {
-    day: "Pondelok",
-    icon: Lightbulb,
-    title: "Ideácia — hľadanie príležitostí",
-    desc: "Zážitkové workshopy, design thinking a brainstorming s AI nástrojmi.",
-    deliverable: "Nápadový canvas",
+    day: 1,
+    title: "Deň 1 — Vznik firmy",
+    topic: "Začíname podnik",
+    description:
+      "Deti si rozdelia roly (CEO, Marketing, Financie, Produkt), vytvoria názov, logo a brand board. Naštartujú hernú ekonomiku — každý tím dostáva 500 StartCoinov.",
+    event: "Príchod konkurencie — tímy musia do 20 minút upraviť stratégiu.",
+    output: "Brand board + biznis plán (1 strana) + cenník",
   },
   {
-    day: "Utorok",
-    icon: PencilRuler,
-    title: "Prototyping — staviame niečo reálne",
-    desc: "Figma, kartón alebo 3D pero. Dôležitý je výsledok, nie materiál.",
-    deliverable: "Funkčný prototyp",
+    day: 2,
+    title: "Deň 2 — Produkt & výroba",
+    topic: "Čo vlastne predávame?",
+    description:
+      "Prototypovanie, kalkulácia nákladov (materiál + čas = cena výroby), krížové testovanie medzi tímami.",
+    event: "Zákazníci vrátili tovar — tímy musia upraviť aspoň 1 produkt na základe spätnej väzby.",
+    output: "Finálny produktový katalóg + kalkulácia nákladov",
   },
   {
-    day: "Streda",
-    icon: Megaphone,
-    title: "Marketing & predaj",
-    desc: "Nahrávame Reels, píšeme príbeh značky, skúšame cenotvorbu.",
-    deliverable: "Promo kampaň",
+    day: 3,
+    title: "Deň 3 — Marketing & značka",
+    topic: "Ako sa o nás dozvedia ľudia?",
+    description:
+      "Fyzický plagát A2, 60-sekundové promo video, AI vizuály v Canva, pitch pred ostatnými tímami.",
+    event: "Influencer reakcia — 2 tímy dostanú +30% dopyt, ostatní musia reagovať.",
+    output: "Plagát + promo video + sada 3 grafík",
   },
   {
-    day: "Štvrtok",
-    icon: Gamepad2,
-    title: "Terénne ekonomické hry",
-    desc: "Outdoor simulácie, športové výzvy a strategická tímová práca.",
-    deliverable: "Tímová hra",
+    day: 4,
+    title: "Deň 4 — Predaj na trhu",
+    topic: "Zarábame",
+    description:
+      "Mini trh (2 hodiny) — deti nakupujú a predávajú v hernej mene. Záverečný blok: predaj rodičom.",
+    event:
+      "Inflačná kríza — zdraženie materiálu o 50%, postihnutý tím musí improvizovať nový produkt do 15 minút.",
+    output: "Finančný výkaz: príjmy, náklady, zisk/strata",
   },
   {
-    day: "Piatok",
-    icon: Presentation,
-    title: "Pitch Day — prezentácia pred rodičmi",
-    desc: "Reálne pódium, rodičia a hostia. Konštruktívny feedback bez známok.",
-    deliverable: "Pitch deck",
+    day: 5,
+    title: "Deň 5 — Finále & investori",
+    topic: "Veľké finále",
+    description:
+      "Pitch pred porotou (rodičia, hostia, mentor). Tajné hlasovanie. Odovzdávanie ocenení.",
+    event: "Investorská otázka — CEO každého tímu odpovie na náhodnú otázku od investora.",
+    output: "Záverečná prezentácia + osobný reflexný záznam",
   },
 ];
 
-const FeaturesSection = () => {
-  return (
-    <section id="program" className="relative z-10 py-24 lg:py-32">
-      <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 max-w-2xl"
-        >
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Týždenný program</p>
-          <h2 className="mt-3 text-4xl font-semibold text-white sm:text-5xl">
-            5 dní. Od nápadu k prezentácii.
-          </h2>
-          <p className="mt-4 text-lg text-white/45">
-            Každý deň má jasný cieľ a výstup. Vaše dieťa sa učí cez prax — bez nudných prednášok.
-          </p>
-        </motion.div>
+const ProgramSection = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-          {path.map((item, index) => (
-            <motion.div
-              key={item.day}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08, duration: 0.5 }}
-              whileHover={{ y: -8, rotateX: 2, rotateY: -2, scale: 1.03, transition: { type: "spring", stiffness: 400, damping: 25 } }}
-              style={{ transformPerspective: 800 }}
-              className="glass-panel-soft group rounded-2xl p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                <item.icon className="h-5 w-5 text-white/60" />
-              </div>
-              <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-white/30">{item.day}</p>
-              <h3 className="mt-2 text-lg font-semibold leading-snug text-white">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/40">{item.desc}</p>
-              <div className="mt-4 inline-flex items-center rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1 text-[10px] font-medium uppercase tracking-widest text-white/30">
-                Výstup · {item.deliverable}
-              </div>
-            </motion.div>
-          ))}
+  const { scrollYProgress: sectionProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 80%", "end 30%"],
+  });
+  const lineProgress = useTransform(sectionProgress, [0, 1], prefersReducedMotion ? [1, 1] : [0, 1]);
+
+  const { scrollYProgress: headingProgress } = useScroll({
+    target: headingRef,
+    offset: ["start end", "end start"],
+  });
+  const headingY = useTransform(headingProgress, [0, 1], prefersReducedMotion ? [0, 0] : [30, -30]);
+
+  return (
+    <section ref={sectionRef} id="program" className="relative z-10 py-24 lg:py-32">
+      <motion.div
+        className="container"
+        initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 48 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="mb-14 max-w-3xl">
+          <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary/70">Program</p>
+          <motion.h2 ref={headingRef} style={{ y: headingY }} className="mt-3 text-4xl font-semibold text-foreground sm:text-5xl">
+            Čo bude vaše dieťa robiť každý deň?
+          </motion.h2>
+          <p className="mt-4 text-lg text-foreground/75">
+            Každý deň má jasnú tému, krízovú event výzvu a merateľný výstup. Rodič vidí konkrétny progres, dieťa
+            zažíva skutočné rozhodovanie.
+          </p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-12 glass-panel rounded-2xl p-8"
-        >
-          <div className="grid gap-8 lg:grid-cols-2">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/40">Prečo to funguje</p>
-              <h3 className="mt-3 text-2xl font-semibold text-white">Mentori + prax = výsledky.</h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/45">
-                Každý deň končí checkpointom, ktorý hodnotia mentori ako v reálnom startupe. Žiadne známky — len konštruktívny feedback a tímová energia.
-              </p>
-            </div>
-            <ul className="space-y-3 text-sm text-white/45">
-              <li className="flex gap-3">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />
-                Dopoludnia deep-work na produktoch, popoludní šport alebo terénne hry.
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />
-                Každý účastník zbiera táborové mince za tímovú prácu, kreativitu a odvahu.
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />
-                Rodičia dostávajú denné mikro reporty — viete presne, čo vaše dieťa stavia.
-              </li>
-            </ul>
+        <div className="relative">
+          <svg
+            aria-hidden="true"
+            className="absolute left-0 top-0 hidden h-full w-12 md:block"
+            viewBox="0 0 48 100"
+            preserveAspectRatio="none"
+          >
+            <path d="M24 2 V98" stroke="rgba(245, 166, 35, 0.22)" strokeLinecap="round" strokeWidth="2" />
+            <motion.path
+              d="M24 2 V98"
+              stroke="#F5A623"
+              strokeLinecap="round"
+              strokeWidth="4"
+              style={{ pathLength: lineProgress }}
+            />
+          </svg>
+
+          <div className="space-y-5 md:pl-10">
+            {programDays.map((item, index) => (
+              <motion.article
+                key={item.title}
+                initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -32 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: prefersReducedMotion ? 0 : 0.6,
+                  delay: prefersReducedMotion ? 0 : index * 0.12,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                whileHover={
+                  prefersReducedMotion
+                    ? undefined
+                    : {
+                        y: -8,
+                        rotateX: 2,
+                        rotateY: -2,
+                        scale: 1.01,
+                        transition: { type: "spring", stiffness: 400, damping: 25 },
+                      }
+                }
+                style={{ transformPerspective: 800 }}
+                className="glass-panel-soft relative rounded-[2rem] p-6 md:ml-6 md:p-7"
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute -left-[2.35rem] top-8 hidden h-4 w-4 rounded-full border-4 border-background bg-primary md:block"
+                />
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-foreground">
+                    Deň {item.day}
+                  </span>
+                  <h3 className="text-2xl font-semibold text-foreground">{item.title}</h3>
+                </div>
+
+                <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] text-primary/80">Téma: "{item.topic}"</p>
+                <p className="mt-3 text-base leading-relaxed text-foreground/80">{item.description}</p>
+
+                <div className="mt-4 rounded-xl border border-primary/20 border-l-4 border-l-primary bg-primary/10 px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary">Event</p>
+                  <p className="mt-1 text-sm leading-relaxed text-foreground/80">{item.event}</p>
+                </div>
+
+                <div className="mt-5 inline-flex items-center rounded-full border border-primary/30 bg-primary/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+                  Výstup: {item.output}
+                </div>
+              </motion.article>
+            ))}
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 };
 
-export default FeaturesSection;
+export default ProgramSection;

@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, ExternalLink, MapPin, MessageCircle, SendHorizonal, Sparkles, X } from "lucide-react";
+import { ExternalLink, MapPin, SendHorizonal, Sparkles, X } from "lucide-react";
+import BrandMark from "./BrandMark";
 
 type MessageAuthor = "bot" | "user";
 
@@ -25,10 +26,10 @@ interface Intent {
 }
 
 const quickPrompts = [
-  "Je tábor vhodný pre začiatočníkov?",
-  "Koľko stojí tábor?",
-  "Kde sa nachádzate?",
-  "Ako funguje rezervácia?",
+  "Je tábor vhodný pre 9-ročné dieťa?",
+  "Ako fungujú StartCoiny?",
+  "Čo dieťa vytvorí za 5 dní?",
+  "Ako rezervujem miesto?",
 ];
 
 const intents: Intent[] = [
@@ -36,63 +37,55 @@ const intents: Intent[] = [
     id: "beginners",
     keywords: ["zaciatocnik", "zaciatocnici", "prvykrat", "vhodny", "skusenosti", "neviem"],
     answer:
-      "Áno. BusinessCamp je navrhnutý aj pre deti bez predchádzajúcich skúseností. Začíname od základov a mentori vedú tímy krok za krokom.",
+      "Áno. Future Foudners Mini je navrhnutý aj pre deti bez predchádzajúcich skúseností. Program je vedený krok za krokom pre vek 9–12 rokov.",
     actions: [{ label: "Pozrieť program", href: "#program" }],
   },
   {
-    id: "schedule",
-    keywords: ["den", "harmonogram", "cas", "trva", "kedy", "odkedy", "dokedy"],
+    id: "program-output",
+    keywords: ["den", "harmonogram", "program", "co", "vystup", "vytvori", "produkty"],
     answer:
-      "Program beží približne od 8:00 do 17:00. Dopoludnia deti stavajú produkt, popoludní majú terénne hry, šport a tímové výzvy.",
-    actions: [{ label: "Denný plán", href: "#dennyplan" }],
+      "Za 5 dní deti vytvoria značku, produktový katalóg, promo video, finančný výkaz a finálny pitch. Každý deň končí merateľným výstupom.",
+    actions: [{ label: "Program na 5 dní", href: "#program" }],
   },
   {
-    id: "pitch-day",
-    keywords: ["piatok", "pitch", "posledny", "prezentacia", "rodicia"],
+    id: "startcoin",
+    keywords: ["startcoin", "sc", "ekonomika", "body", "peniaze", "sankcie", "bonusy"],
     answer:
-      "V piatok prebieha Pitch Day. Tímy odprezentujú svoj projekt pred rodičmi a hosťami, dostanú spätnú väzbu a uzavrú celý týždeň veľmi konkrétnym výsledkom.",
-    actions: [{ label: "Pozrieť program týždňa", href: "#program" }],
+      "Každý tím štartuje s 500 SC. Počas týždňa platí materiál, získava bonusy alebo pokuty a finálne poradie vzniká zo zostatku SC a hodnotenia poroty.",
+    actions: [{ label: "Herná ekonomika", href: "#ekonomika" }],
   },
   {
     id: "price",
     keywords: ["cena", "stoji", "kolko", "eur", "platba"],
     answer:
-      "Cena turnusu je od 390 € do 410 € podľa termínu. V cene sú mentori, strava, materiály, poistenie aj piatkový Pitch Day.",
-    actions: [{ label: "Termíny a ceny", href: "#terminy" }],
+      "Kapacita je obmedzená na 30 detí a miesta sa rýchlo vypredávajú. Vyplňte rezerváciu a pošleme vám aktuálne organizačné detaily.",
+    actions: [{ label: "Odoslať rezerváciu", href: "#kontakt" }],
   },
   {
-    id: "food",
-    keywords: ["strava", "jedlo", "obed", "ranajky", "alergia", "intolerancia"],
+    id: "awards",
+    keywords: ["ocenenie", "vyhra", "vyherca", "trofej", "tim", "leader"],
     answer:
-      "Strava je zahrnutá v cene. Deti majú 3 jedlá denne, ovocný bar a pitný režim. Vieme riešiť aj intolerancie a individuálne obmedzenia.",
-    actions: [{ label: "Info pre rodičov", href: "#parents" }],
+      "Každý tím získava ocenenie. Hodnotí sa biznis výsledok, marketing, produkt, zisk, líder tímu aj kreativita.",
+    actions: [{ label: "Pozrieť ocenenia", href: "#ocenenia" }],
   },
   {
     id: "location",
     keywords: ["kde", "adresa", "lokalita", "zello", "zellova", "bratislava", "mapa"],
     answer:
-      "Sme na adrese Žellova 6 v Bratislave. Lokalita je dobre dostupná autom aj MHD a mapu nájdete nižšie na stránke.",
+      "Tábor prebieha v Bratislave počas leta 2026. Po rezervácii vám pošleme kompletné organizačné informácie.",
     actions: [
-      { label: "Otvoriť mapu na stránke", href: "#mapa" },
-      { label: "Google Maps", href: "https://www.google.com/maps/search/?api=1&query=%C5%BDellova+6+Bratislava" },
+      { label: "Rezervačný formulár", href: "#kontakt" },
     ],
   },
   {
     id: "reservation",
     keywords: ["rezervacia", "prihlaska", "prihlasit", "miesto", "termin", "kontaktujte"],
     answer:
-      "Rezerváciu spravíte cez tlačidlo Predbežná rezervácia na stránke. Zanecháte email a tím sa vám ozve s ďalšími detailmi a potvrdením.",
+      "Rezerváciu spravíte cez tlačidlo Rezervovať miesto alebo formulár v sekcii Kontakt. Ozveme sa vám s ďalšími krokmi.",
     actions: [
-      { label: "Prejsť na prihlásenie", href: "#prihlaska" },
+      { label: "Prejsť na rezerváciu", href: "#kontakt" },
       { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
     ],
-  },
-  {
-    id: "safety",
-    keywords: ["bezpecnost", "dozor", "poistenie", "zdravotnik"],
-    answer:
-      "Na tábore je zabezpečený dohľad mentorov a animátorov, poistenie je v cene a rodičia majú k dispozícii priebežnú komunikáciu aj kontaktnú linku.",
-    actions: [{ label: "Pre rodičov", href: "#parents" }],
   },
   {
     id: "contact",
@@ -110,9 +103,9 @@ const defaultReply: Message = {
   id: 0,
   from: "bot",
   text:
-    "Tomuto som úplne presne nerozumel, ale viem pomôcť s cenou, termínmi, adresou, stravou, bezpečnosťou alebo rezerváciou.",
+    "Tomuto som úplne presne nerozumel, ale viem pomôcť s programom, StartCoin ekonomickou hrou, oceneniami alebo rezerváciou.",
   actions: [
-    { label: "Termíny a ceny", href: "#terminy" },
+    { label: "Pozrieť program", href: "#program" },
     { label: "Napísať email", href: "mailto:mimoriadni@gmail.com" },
   ],
 };
@@ -122,10 +115,10 @@ const initialMessages: Message[] = [
     id: 1,
     from: "bot",
     text:
-      "Dobrý deň. Som BusinessCamp asistent a odpoviem na otázky o programe, cenách, lokalite, rezervácii a praktických veciach pre rodičov.",
+      "Dobrý deň. Som asistent Future Foudners Mini a odpoviem na otázky o programe, StartCoin ekonomike, oceneniach a rezervácii.",
     actions: [
-      { label: "Koľko stojí tábor?", prompt: "Koľko stojí tábor?" },
-      { label: "Kde sa nachádzate?", prompt: "Kde sa nachádzate?" },
+      { label: "Čo bude dieťa robiť?", prompt: "Čo dieťa vytvorí za 5 dní?" },
+      { label: "Ako fungujú StartCoiny?", prompt: "Ako fungujú StartCoiny?" },
     ],
   },
 ];
@@ -260,8 +253,8 @@ const ChatbotWidget = () => {
             <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
               <div>
                 <div className="flex items-center gap-2 text-sm font-medium text-white/90">
-                  <Bot className="h-4 w-4 text-white/45" />
-                  BusinessCamp asistent
+                  <BrandMark className="h-5 w-5" letterClassName="text-sm" />
+                  Future Foudners Mini asistent
                 </div>
                 <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/35">
                   <Sparkles className="h-3 w-3" />
@@ -346,7 +339,7 @@ const ChatbotWidget = () => {
 
               <div className="mt-3 flex items-center gap-1.5 text-[11px] text-white/28">
                 <MapPin className="h-3 w-3" />
-                Žellova 6, Bratislava
+                Bratislava · Leto 2026
               </div>
             </div>
           </motion.div>
@@ -359,7 +352,7 @@ const ChatbotWidget = () => {
         className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-black shadow-[0_10px_40px_rgba(255,255,255,0.1)] transition hover:bg-white/90"
         aria-label="Otvoriť chat asistenta"
       >
-        <MessageCircle className="h-5 w-5" />
+        <BrandMark className="h-7 w-7" letterClassName="text-base" />
       </button>
     </div>
   );

@@ -1,35 +1,25 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import SkillTreeSection from "@/components/SkillTreeSection";
-import ExperienceGallery from "@/components/ExperienceGallery";
-import MentorShowcase from "@/components/MentorShowcase";
-import SocialProofSection from "@/components/SocialProofSection";
-import ParentsSection from "@/components/ParentsSection";
-import ScheduleSection from "@/components/ScheduleSection";
-import CTASection from "@/components/CTASection";
+import ProgramSection from "@/components/FeaturesSection";
+import HernaEkonomika from "@/components/SkillTreeSection";
+import OceneniaSection from "@/components/ExperienceGallery";
 import ContactForm from "@/components/ContactForm";
-import MapSection from "@/components/MapSection";
 import Footer from "@/components/Footer";
-import MetaballBackground from "@/components/MetaballBackground";
+import { BackgroundCanvas } from "../components/BackgroundCanvas";
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen bg-[#080808] grid-overlay">
-      <MetaballBackground />
-      <Navbar />
-      <HeroSection />
-      <FeaturesSection />
-      <SkillTreeSection />
-      <ExperienceGallery />
-      <ScheduleSection />
-      <ParentsSection />
-      <MentorShowcase />
-      <SocialProofSection />
-      <CTASection />
-      <ContactForm />
-      <MapSection />
-      <Footer />
+    <div className="relative min-h-screen overflow-x-clip bg-background">
+      <BackgroundCanvas />
+      <div className="relative z-10">
+        <Navbar />
+        <HeroSection />
+        <ProgramSection />
+        <HernaEkonomika />
+        <OceneniaSection />
+        <ContactForm />
+        <Footer />
+      </div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ const ReservationModal = ({ open, onClose }: ReservationModalProps) => {
     e.preventDefault();
     if (!email) return;
 
-    const mailtoLink = `mailto:mimoriadni@gmail.com?subject=${encodeURIComponent("Predbežná rezervácia – BusinessCamp")}&body=${encodeURIComponent(`Dobrý deň,\n\nmám záujem o predbežnú rezerváciu miesta v BusinessCampe.\n\nMôj e-mail: ${email}\n\nĎakujem.`)}`;
+    const mailtoLink = `mailto:mimoriadni@gmail.com?subject=${encodeURIComponent("Predbežná rezervácia - Future Foudners Mini")}&body=${encodeURIComponent(`Dobrý deň,\n\nmám záujem o predbežnú rezerváciu miesta v tábore Future Foudners Mini pre dieťa vo veku 9–12 rokov.\n\nMôj e-mail: ${email}\n\nĎakujem.`)}`;
     window.location.href = mailtoLink;
     setSubmitted(true);
     setTimeout(() => {
@@ -44,7 +44,7 @@ const ReservationModal = ({ open, onClose }: ReservationModalProps) => {
           >
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 rounded-full p-1.5 text-white/50 transition hover:bg-white/10 hover:text-white"
+              className="absolute right-4 top-4 rounded-full p-1.5 text-foreground/60 transition hover:bg-primary/10 hover:text-foreground"
               aria-label="Zatvoriť"
             >
               <X className="h-5 w-5" />
@@ -56,22 +56,22 @@ const ReservationModal = ({ open, onClose }: ReservationModalProps) => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center py-8 text-center"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
-                  <Check className="h-8 w-8 text-white" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+                  <Check className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="mt-4 text-xl font-semibold text-white">Ďakujeme!</h3>
-                <p className="mt-2 text-sm text-white/60">Vašu predbežnú rezerváciu sme zaznamenali. Ozveme sa vám čo najskôr.</p>
+                <h3 className="mt-4 text-xl font-semibold text-foreground">Ďakujeme!</h3>
+                <p className="mt-2 text-sm text-foreground/70">Vašu predbežnú rezerváciu sme zaznamenali. Ozveme sa vám čo najskôr.</p>
               </motion.div>
             ) : (
               <>
-                <h3 className="text-2xl font-semibold text-white">Predbežná rezervácia</h3>
-                <p className="mt-2 text-sm text-white/50">
-                  Zanechajte nám e-mail a my vás budeme kontaktovať s detailami o voľných miestach a termínoch.
+                <h3 className="text-2xl font-semibold text-foreground">Predbežná rezervácia</h3>
+                <p className="mt-2 text-sm text-foreground/70">
+                  Zanechajte nám e-mail a my vás budeme kontaktovať s detailami o voľných miestach v tábore Future Foudners Mini.
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                   <div>
-                    <label htmlFor="reservation-email" className="mb-2 block text-xs font-medium uppercase tracking-widest text-white/40">
+                    <label htmlFor="reservation-email" className="mb-2 block text-xs font-medium uppercase tracking-widest text-foreground/60">
                       Váš e-mail
                     </label>
                     <input
@@ -87,14 +87,14 @@ const ReservationModal = ({ open, onClose }: ReservationModalProps) => {
 
                   <button
                     type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/90"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
                   >
                     Odoslať predbežnú rezerváciu
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </form>
 
-                <p className="mt-4 text-center text-[11px] uppercase tracking-widest text-white/30">
+                <p className="mt-4 text-center text-[11px] uppercase tracking-widest text-foreground/45">
                   Nezáväzné · Odpovieme do 24 hodín
                 </p>
               </>

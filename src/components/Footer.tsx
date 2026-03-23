@@ -1,38 +1,36 @@
+import BrandMark from "./BrandMark";
+
 const Footer = () => {
   return (
-    <footer className="relative z-10 border-t border-white/[0.06] py-14">
-      <div className="container grid gap-10 md:grid-cols-3">
-        <div>
-          <div className="text-lg font-semibold text-white">BusinessCamp</div>
-          <p className="mt-3 text-sm leading-relaxed text-white/35">
-            Letný denný tábor pre deti 11 &#8211; 15 rokov v Bratislave. Podnikanie, tvorba produktu a prvé tímové skúsenosti.
-          </p>
-        </div>
-        <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-white/30">Kontakt</p>
-          <div className="mt-3 space-y-2 text-sm text-white/50">
-            <a href="mailto:mimoriadni@gmail.com" className="block transition hover:text-white">
-              mimoriadni@gmail.com
-            </a>
-            <a href="tel:+421900000000" className="block transition hover:text-white">
-              +421 900 000 000
-            </a>
-            <p>Bratislava</p>
+    <footer className="relative z-10 border-t border-border/80 py-12">
+      <div className="container grid gap-8 md:grid-cols-3 md:items-center">
+        <div className="text-left">
+          <div className="flex items-center gap-3">
+            <BrandMark className="h-10 w-10" letterClassName="text-xl" />
+            <p className="text-lg font-semibold text-foreground">Future Foudners Mini</p>
           </div>
+          <p className="mt-2 text-sm text-foreground/65">Letný denný tábor · Bratislava · 2026</p>
         </div>
-        <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-white/30">Navigácia</p>
-          <div className="mt-3 space-y-2 text-sm text-white/50">
-            <a href="#program" className="block transition hover:text-white">Program</a>
-            <a href="#dennyplan" className="block transition hover:text-white">Denný plán</a>
-            <a href="#terminy" className="block transition hover:text-white">Termíny</a>
-            <a href="#kontakt" className="block transition hover:text-white">Kontakt</a>
-          </div>
+
+        <nav className="flex flex-wrap items-center justify-start gap-4 text-sm text-foreground/70 md:justify-center">
+          <a href="#program" className="transition hover:text-foreground">
+            Program
+          </a>
+          <a href="#ekonomika" className="transition hover:text-foreground">
+            Ekonomika
+          </a>
+          <a href="#ocenenia" className="transition hover:text-foreground">
+            Ocenenia
+          </a>
+          <a href="#kontakt" className="transition hover:text-foreground">
+            Kontakt
+          </a>
+        </nav>
+
+        <div className="text-left text-sm text-foreground/55 md:text-right">
+          © 2026 Future Foudners Mini. Všetky práva vyhradené.
         </div>
       </div>
-      <p className="mt-10 text-center text-xs uppercase tracking-widest text-white/20">
-        &#169; 2026 BusinessCamp Bratislava
-      </p>
     </footer>
   );
 };
